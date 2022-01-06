@@ -4,6 +4,6 @@
   },
 
   "scripts": {
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" "
+    "dev": "concurrently \"cd dashboard-api && npm start\" \"cd dashboard-client && npm start\" "
 }
 }
