@@ -2,8 +2,11 @@
   "devDependencies": {
     "concurrently": "^7.0.0"
   },
-
   "scripts": {
     "dev": "concurrently \"cd dashboard-api && npm start\" \"cd dashboard-client && npm start\" "
-}
+  },
+  "dependencies": {
+    "react-router": "^6.2.1",
+    "react-router-dom": "^6.2.1"
+  }
 }
