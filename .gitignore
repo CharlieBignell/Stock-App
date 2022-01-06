@@ -2,8 +2,13 @@
 
 # dependencies
 /node_modules
+/dashboard-api/node_modules
+/dashboard-client/node_modules
+
+
 /.pnp
 .pnp.js
+**/node_modules
 
 # testing
 /coverage
