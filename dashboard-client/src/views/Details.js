@@ -1,31 +1,33 @@
 import React, { Component } from "react";
-import '../styles/Overview.css';
+import '../styles/Details.css';
+
+import Header from "./components/Header";
 
 class Details extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { apiData: "" };
-  }
 
-  getData() {
-    fetch("http://localhost:9000/details")
-      .then(res => res.text())
-      .then(res => this.setState({ apiData: res }));
-  }
+    constructor(props) {
+        super(props);
+        this.state = { apiData: "" };
+    }
 
-  componentDidMount() {
-    this.getData();
-  }
+    getData() {
+        fetch("http://localhost:9000/details")
+            .then(res => res.text())
+            .then(res => this.setState({ apiData: res }));
+    }
 
-  render(){
-    return (
-      <div className="App">
-        <header className="App-header">
-          <p className="App-intro">{this.state.apiData}</p>
-        </header>
-      </div>
-    );
-  }
+    componentDidMount() {
+        this.getData();
+    }
+
+    render() {
+        return (
+            <div id="main">
+                <Header></Header>
+                <p>{this.state.apiData}</p>
+            </div>
+        );
+    }
 
 }
 
