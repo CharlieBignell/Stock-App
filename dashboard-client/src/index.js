@@ -11,9 +11,9 @@ render(
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<Overview />} />
-            <Route path="Overview" element={<Overview />} />
-            <Route path="Details" element={<Details />} />
-            <Route path="Breakdown" element={<Breakdown />} />
+            <Route path="overview" element={<Overview />} />
+            <Route path="details" element={<Details />} />
+            <Route path="breakdown" element={<Breakdown />} />
         </Routes>
     </BrowserRouter>,
 

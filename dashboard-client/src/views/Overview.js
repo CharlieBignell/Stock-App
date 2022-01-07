@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import '../styles/Overview.css';
 
-import Header from "./components/Header";
+import Header from "../components/Header";
 
 class Overview extends Component {
 
