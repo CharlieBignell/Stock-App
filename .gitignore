@@ -2,9 +2,9 @@
 
 # dependencies
 /node_modules
-/dashboard-api/node_modules
-/dashboard-client/node_modules
-
+/back-end/node_modules
+/front-end/node_modules
+/back-end/db.config.js
 
 /.pnp
 .pnp.js
