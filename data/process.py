@@ -25,7 +25,7 @@ df_buys = df_basic.loc[df_basic["Type"] == "BUY"]
 df_sells = df_basic.loc[df_basic["Type"] == "SELL"]
 
 # Get the earliest transaction date
-minDate = df_basic["Date"].min()
+minDate = min(df_basic["Date"].min(), df_other["Date"].min())
 
 # A list of all the tickers
 tickers_all = df_basic['Name'].unique()
@@ -68,12 +68,12 @@ for index, row in allSplits.iterrows():
 print("Getting exchange rates...")
 
 # Get any necessary exchange rates
-df_exchange_USDGBP = web.DataReader("GBPUSD=X", 'yahoo', df_buys["Date"].min(), pd.to_datetime("today"))
+df_exchange_USDGBP = web.DataReader("GBPUSD=X", 'yahoo', minDate, pd.to_datetime("today"))
 df_exchange_USDGBP.drop(columns=["High", "Low", "Open", "Volume", "Adj Close"], inplace=True)
 df_exchange_USDGBP = df_exchange_USDGBP.reset_index()
 
 # Get the first and last date
-currentDate_fx = df_exchange_USDGBP["Date"].min()
+currentDate_fx = minDate
 lastDate_fx = pd.to_datetime("today")
 lastDate_fx = lastDate_fx.replace(hour=0, minute=0, second=0, microsecond=0)
 
@@ -162,7 +162,7 @@ print("Getting daily value...")
 dates = []
 values = []
 
-currentDate = df_buys["Date"].min()
+currentDate = minDate
 
 endDate = pd.to_datetime("today")
 endDate = endDate.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -198,11 +198,19 @@ while currentDate != endDate:
 
     currentDate = currentDate + timedelta(days=1)
         
-df_dailyValue = pd.DataFrame(list(zip(dates, values)),columns =['Date', 'Value'])
-df_dailyValue = df_dailyValue[df_dailyValue["Value"] != 0]
+df_daily = pd.DataFrame(list(zip(dates, values)),columns =['Date', 'Value'])
+df_daily = df_daily[df_daily["Value"] != 0]
 
+# Need money ITB?
+df_daily = pd.merge(df_daily, df_other.loc[df_other["Type"] == "Deposit"][["Value", "Date"]], on="Date", how="outer", sort=True)
+df_daily = df_daily.rename(columns={"Date": "date", "Value_x": "value", "Value_y": "amount_deposited"})
+df_daily = df_daily.fillna(0)
 
 # Export all data
+
+# Day ID, amount_deposited, amount_sold, volatility, return_spy, return_ftse, return_total, return_cum, ind_income, ind_outgoings
+# Day ID, date, value, amount_deposited, amount_sold, volatility, return_spy, return_ftse, return_total, return_cum, ind_income, ind_outgoings
+df_daily.to_csv('./daily_summary.csv', index=False)
+
 # df_stocks.to_csv('./stocks_summary.csv', index=False)
-# df_daily.to_csv('./daily_summary.csv', index=False)
 # df_daily_stocks.to_csv('./daily_stocks.csv', index=False)
