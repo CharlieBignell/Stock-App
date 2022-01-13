@@ -5,14 +5,11 @@ def getDateFormat(day, month, year):
     return pd.to_datetime(f"{year}-{month}-{day}")
 
 # Get the shares held on a given day
-def getDayPortfolio(df_basic, day = pd.to_datetime("today")):
-    
-    df_buys = df_basic.loc[df_basic["Type"] == "BUY"]
-    df_sells = df_basic.loc[df_basic["Type"] == "SELL"]
+def getDayPortfolio(df_buys, df_sells, day = pd.to_datetime("today")):
 
     # Get the buys and sells for each day before the given date
-    df_buysInRange = df_buys.loc[df_basic["Date"] <= day, ["Date", "Name", "ShareCount"]]
-    df_sellsInRange = df_sells.loc[df_basic["Date"] <= day, ["Date", "Name", "ShareCount"]]
+    df_buysInRange = df_buys.loc[df_buys["Date"] <= day, ["Date", "Name", "ShareCount"]]
+    df_sellsInRange = df_sells.loc[df_sells["Date"] <= day, ["Date", "Name", "ShareCount"]]
 
     # Any missing sells, i.e. any stock we've bought but not sold any of, need to still be in the resulting 'sell' df
     df_emptySells = df_buysInRange.copy()

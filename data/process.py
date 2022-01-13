@@ -34,7 +34,7 @@ tickers_all = df_basic['Name'].unique()
 tickers_currency = df_buys[["Name", "Currency"]].drop_duplicates().reset_index(drop=True)
 
 # A list of currently held tickers
-tickers_current = getDayPortfolio(df_basic)["Name"].explode().unique() 
+tickers_current = getDayPortfolio(df_buys, df_sells)["Name"].explode().unique() 
 
 ##############################
 #  Account for stock splits  #
@@ -122,6 +122,12 @@ for ticker in tickers_all:
     # Get the close prices for each day
     df_closing_ticker = web.DataReader(ticker, 'yahoo', date_first, date_last)    
 
+    # If there are gaps in the dates, this will be dealt with later. However, we need to make sure we have a value on or before
+    #  the 'first' date in order to do this. Keep trying the previous days until we get a value
+    while date_first != df_closing_ticker.index.min():
+        date_first = date_first - timedelta(days=1)
+        df_closing_ticker = web.DataReader(ticker, 'yahoo', date_first, date_last)    
+
     # Format the df
     df_closing_ticker.drop(columns=["High", "Low", "Open", "Volume", "Adj Close"], errors="ignore", inplace=True)
     df_closing_ticker["Name"] = ticker
@@ -147,13 +153,54 @@ for ticker in tickers_all:
 df_closing_all = pd.concat(df_closing_all)
 df_closing_all.drop(columns=["index"], inplace=True)
 
-#################
+##############################
+#  Populate the daily table  #
+##############################
+print("Getting daily value...")
 
-#################
+# Get daily portfolio value
+dates = []
+values = []
 
-# Populate the stocks table
-# Populate the daily table
-# Populate the daily stocks table
+currentDate = df_buys["Date"].min()
+
+endDate = pd.to_datetime("today")
+endDate = endDate.replace(hour=0, minute=0, second=0, microsecond=0)
+
+# Move day-by-day from the first date to now
+while currentDate != endDate:
+
+    # Get the portoflio of holdings for this date
+    df_portfolio = getDayPortfolio(df_buys, df_sells, currentDate)
+
+    # Get the closing prices for this day
+    df_relevantClosing = df_closing_all.loc[df_closing_all["Date"] == currentDate]
+
+    # Get all tickers for this day
+    tickers = df_portfolio["Name"].values.tolist()
+
+    # Loop through the tickers that we havent managed to extract closing data from, and keep checking the previous day 
+    # until we get a value so we remove any gaps in the closing data
+    for t in tickers:        
+        dayCounter = 1
+        while t not in df_relevantClosing.values:
+            prevDay = currentDate - timedelta(days=dayCounter)
+            df_previousClosing = df_closing_all.loc[(df_closing_all["Date"] == prevDay) & (df_closing_all["Name"] == t)]
+            df_relevantClosing = df_relevantClosing.append(df_previousClosing, ignore_index=True)
+            dayCounter = dayCounter + 1
+
+    # Merge these together, and calculate the value of each stock    
+    df_portfolio = pd.merge(df_portfolio, df_relevantClosing, on="Name")
+    df_portfolio["Value"] = df_portfolio["ShareCount"] * df_portfolio["Close"]
+    
+    dates.append(currentDate)
+    values.append(df_portfolio["Value"].sum())
+
+    currentDate = currentDate + timedelta(days=1)
+        
+df_dailyValue = pd.DataFrame(list(zip(dates, values)),columns =['Date', 'Value'])
+df_dailyValue = df_dailyValue[df_dailyValue["Value"] != 0]
+
 
 # Export all data
 # df_stocks.to_csv('./stocks_summary.csv', index=False)
