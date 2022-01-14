@@ -114,22 +114,59 @@ while currentDate != endDate:
 df_daily = pd.DataFrame(list(zip(dates, values)),columns =['Date', 'Value'])
 df_daily = df_daily[df_daily["Value"] != 0]
 
+
 ##################
 #  Get deposits  #
 ##################
+print("Adding deposit column...")
+
+# Get the deposit rows
 df_deposits = df_other.loc[df_other["Type"] == "Deposit"][["Value", "Date"]]
+
+# Merge with daily
 df_daily = pd.merge(df_daily, df_deposits, on="Date", how="outer", sort=True)
 df_daily = df_daily.rename(columns={"Date": "date", "Value_x": "value", "Value_y": "amount_deposited"})
 df_daily = df_daily.fillna(0)
 
+
 ################
 #  Get return  #
 #################
+print("Adding return column...")
 
+# Get the necessary buy and sell columns
+df_cumBuys = df_buys[["Date", "Value"]]
+df_cumSells = df_sells[["Date", "Value"]]
+
+# Group by day
+df_cumBuys = df_cumBuys.groupby(["Date"]).sum()
+df_cumSells = df_cumSells.groupby(["Date"]).sum()
+
+# Merge into a single df
+df_cumAll = pd.merge(df_cumBuys, df_cumSells, on="Date", how="outer")
+df_cumAll.reset_index(inplace=True)
+df_cumAll = df_cumAll.rename(columns={"Date": "date", "Value_x": "amount_bought", "Value_y": "amount_sold"})
+
+# Merge with daily
+df_daily = pd.merge(df_daily, df_cumAll, on="date", how="left", sort=True)
+df_daily[["amount_bought", "amount_sold"]] = df_daily[["amount_bought", "amount_sold"]]*-1
+df_daily[["amount_bought", "amount_sold"]] = df_daily[["amount_bought", "amount_sold"]].fillna(0)
+
+# Calculate cumulative buys and sells
+df_daily["cumBuys"] = df_daily["amount_bought"].cumsum()
+df_daily["cumSells"] = df_daily["amount_sold"].cumsum()
+df_daily["cumNet"] = df_daily["cumBuys"] + df_daily["cumSells"]
+
+# Calculate return
+df_daily["amount_return_cum"] = df_daily["value"] - df_daily["cumNet"]
+df_daily["percent_return_cum"] = (df_daily["amount_return_cum"]*100)/df_daily["cumNet"]
+
+df_daily.drop(columns=["cumBuys", "cumSells"], inplace=True)
 
 # Export all data
+df_daily = df_daily.round(2)
 
-# Day ID, return_day, return_cum, amount_sold, volatility, return_spy, return_ftse, , , ind_income, ind_outgoings
+# Day ID, amount_sold, volatility, return_spy, return_ftse, , , ind_income, ind_outgoings
 # Day ID, date, value, amount_deposited, amount_sold, volatility, return_spy, return_ftse, return_total, return_cum, ind_income, ind_outgoings
 df_daily.to_csv('./daily_summary.csv', index=False)
 
