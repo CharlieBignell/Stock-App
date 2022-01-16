@@ -172,3 +172,112 @@ df_daily.to_csv('./daily_summary.csv', index=False)
 
 # df_stocks.to_csv('./stocks_summary.csv', index=False)
 # df_daily_stocks.to_csv('./daily_stocks.csv', index=False)
+
+
+# Generate company summary
+
+sum_trades = []
+amount_bought = []
+quant_bought = []
+amount_sold = []
+quant_sold = []
+quant_current = []
+value_current = []
+
+for t in tickers_all:
+
+    # Sum the buys and sells (not subtract, as buys are negative)
+    sum_trades.append(len(df_buys.loc[df_buys["Name"] == t]) + len(df_sells.loc[df_sells["Name"] == t]))
+
+    # Sum the # bought and sold
+    quant_bought.append(df_buys.loc[df_buys["Name"] == t, "ShareCount"].sum().round(3))
+    quant_sold.append(df_sells.loc[df_sells["Name"] == t, "ShareCount"].sum().round(3))
+
+    # Sum the £ bought and sold
+    amount_bought.append(df_buys.loc[df_buys["Name"] == t, "Value"].sum()*-1)
+    amount_sold.append(df_sells.loc[df_sells["Name"] == t, "Value"].sum())
+    
+    # Work out how many shares we're currently holding
+    holding = df_buys.loc[df_buys["Name"] == t, "ShareCount"].sum().round(3) - df_sells.loc[df_sells["Name"] == t, "ShareCount"].sum().round(3)
+
+    # Work out the value of what we're currently holding
+    close = df_closing_all.loc[df_closing_all["Name"] == t]
+    quant_current.append(holding)
+    value_current.append(close.loc[close['Date'].idxmax()]["Close"]*holding)
+
+# Combine all these lists into a single dataframe
+df_tickerSum = pd.DataFrame({
+    'Ticker': tickers_all, 
+    'Vol': sum_trades, 
+    '# Bought': quant_bought, 
+    '# Sold': quant_sold, 
+    "£ Spent": amount_bought,
+    "£ Sold": amount_sold,
+    "# Holding": quant_current,
+    "Value": value_current
+})
+
+print("\n-- Overall Summary --")
+
+# Generate monthly summary
+
+# Get, format, and summarise the 'total' columns
+df_monthSum_Totals = df_daily[["date", "amount_bought", "amount_sold"]]
+# df_monthSum_Totals["amount_bought"] = df_daily["amount_bought"]*-1
+df_monthSum_Totals.set_index('date', inplace=True)
+df_monthSum_Totals = df_monthSum_Totals.resample('MS').sum()
+
+# Get and summarise the 'value' columns
+df_monthSum_Values = df_daily[["date", "value"]]
+df_monthSum_Values.set_index('date', inplace=True)
+df_monthSum_Values = df_monthSum_Values.resample('MS').mean()
+
+# Merge both summaries
+df_monthSum = pd.merge(df_monthSum_Totals,df_monthSum_Values, on="date")
+
+# Format the resulting dataframe
+df_monthSum.rename(columns={"value": "Avg. Value"}, inplace=True)
+df_monthSum.reset_index(inplace=True)
+df_monthSum = df_monthSum.round(2)
+
+
+firstDate = df_daily["date"].min().strftime('%d/%m/%Y')
+lastDate =  df_daily["date"].max().strftime('%d/%m/%Y')
+length_years = int(len(df_monthSum)/12)
+length_months = len(df_monthSum)%12
+print("You've been investing for {0} year(s) and {1} month(s), between {2} and {3}".format(length_years, length_months, firstDate, lastDate))
+
+sum_trades = len(df_buys) + len(df_sells)
+sum_buys = len(df_buys)
+sum_sells = len(df_sells)
+print("You made a total of {0} trades ({1} buys/{2} sells)".format(sum_trades, sum_buys, sum_sells))
+
+sum_deposit = df_daily["amount_deposited"].astype(int).sum()
+print("You invested a total of £{0}".format(sum_deposit))
+
+mean_buy = (df_buys["Value"].mean()*-1).round(2)
+print("Your mean investment was £{}".format(mean_buy))
+
+current_value = df_daily.loc[df_daily['date'].idxmax()]["value"].round(2)
+increase = (current_value - sum_deposit).round(2)
+increase_per = ((increase/sum_deposit)*100).round(1)
+print("Your current portfolio is worth £{0}, this is an increase of £{1} ({2}%)".format(current_value, increase, increase_per))
+
+print("\n-- Monthly Summary --")
+
+maxBuy_month = df_monthSum.loc[df_monthSum['amount_bought'].idxmax()]["date"]
+maxBuy_amount = df_monthSum["amount_bought"].max().round(2)
+print("You spent the most in {0} (£{1})".format(maxBuy_month, maxBuy_amount))
+
+maxSell_month = df_monthSum.loc[df_monthSum['amount_sold'].idxmax()]["date"]
+maxSell_amount = df_monthSum["amount_sold"].max().round(2)
+print("You sold the most in {0} (£{1})".format(maxSell_month, maxSell_amount))
+
+maxValue_month = df_monthSum.loc[df_monthSum['Avg. Value'].idxmax()]["date"]
+maxValue_amount = df_monthSum["Avg. Value"].max().round(2)
+print("Your highest-value month was {0} (£{1})\n".format(maxValue_month, maxValue_amount))
+
+print(df_monthSum)
+
+print("\n-- Ticker Summary --")
+print(df_tickerSum)
