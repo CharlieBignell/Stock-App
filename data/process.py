@@ -25,21 +25,13 @@ df_dividend['Date'] = pd.to_datetime(df_dividend['Date'])
 df_closing_all['Date'] = pd.to_datetime(df_closing_all['Date'])
 df_exchange_USDGBP['Date'] = pd.to_datetime(df_exchange_USDGBP['Date'])
 
-# Split buys and sells into separate dataframes
-df_buys = df_basic.loc[df_basic["Type"] == "BUY"]
-df_sells = df_basic.loc[df_basic["Type"] == "SELL"]
-
 # Get the earliest transaction date
 minDate = min(df_basic["Date"].min(), df_other["Date"].min())
 
 # A list of all the tickers
 tickers_all = df_basic['Name'].unique()
 
-# A list of all tickers with their currency
-tickers_currency = df_buys[["Name", "Currency"]].drop_duplicates().reset_index(drop=True)
 
-# A list of currently held tickers
-tickers_current = getDayPortfolio(df_buys, df_sells)["Name"].explode().unique() 
 
 ##############################
 #  Account for stock splits  #
@@ -66,6 +58,16 @@ allSplits = pd.concat(allSplits)
 # Iterate through splits and alter share counts as necessary
 for index, row in allSplits.iterrows():
     df_basic.loc[(df_basic["Name"] == row["Name"]) & (df_basic["Date"] < row["Date"]), ["ShareCount"]] = (df_basic['ShareCount'] * row["Split"]).round(6)
+
+# Split buys and sells into separate dataframes
+df_buys = df_basic.loc[df_basic["Type"] == "BUY"]
+df_sells = df_basic.loc[df_basic["Type"] == "SELL"]
+
+# A list of all tickers with their currency
+tickers_currency = df_buys[["Name", "Currency"]].drop_duplicates().reset_index(drop=True)
+
+# A list of currently held tickers
+tickers_current = getDayPortfolio(df_buys, df_sells)["Name"].explode().unique() 
 
 ###########################
 #  Calculate daily value  #
@@ -223,7 +225,7 @@ print("\n-- Overall Summary --")
 
 # Get, format, and summarise the 'total' columns
 df_monthSum_Totals = df_daily[["date", "amount_bought", "amount_sold"]]
-# df_monthSum_Totals["amount_bought"] = df_daily["amount_bought"]*-1
+df_monthSum_Totals["amount_sold"] = df_daily["amount_sold"]*-1
 df_monthSum_Totals.set_index('date', inplace=True)
 df_monthSum_Totals = df_monthSum_Totals.resample('MS').sum()
 
