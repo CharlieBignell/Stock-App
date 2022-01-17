@@ -11,8 +11,8 @@ pd.options.mode.chained_assignment = None
 
 # Get the data
 print("Reading local data...")
-df_basic = pd.read_csv('./basic.csv')
-df_other = pd.read_csv('./other.csv')
+df_basic = pd.read_csv('./inputs/basic.csv')
+df_other = pd.read_csv('./inputs/other.csv')
 
 # Format date fields
 df_basic['Date'] = pd.to_datetime(df_basic['Date'])
