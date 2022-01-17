@@ -35,6 +35,19 @@ tickers_currency = df_buys[["Name", "Currency"]].drop_duplicates().reset_index(d
 tickers_current = getDayPortfolio(df_buys, df_sells)["Name"].explode().unique() 
 
 ########################
+#  Get Overall Market  #
+########################
+df_spy = web.DataReader("SPY", 'yahoo', minDate, pd.to_datetime("today")).reset_index()
+df_spy = df_spy[["Date", "Adj Close"]]
+
+df_ftse = web.DataReader("VUKE.L", 'yahoo', minDate, pd.to_datetime("today")).reset_index()
+df_ftse = df_ftse[["Date", "Adj Close"]]
+
+df_markets = pd.merge(df_spy, df_ftse, on="Date", how="outer", sort=True)
+df_markets = df_markets.rename(columns={"Adj Close_x": "spy", "Adj Close_y": "ftse"})
+df_markets = df_markets.fillna(0)
+
+########################
 #  Get exchange rates  #
 ########################
 print("Getting exchange rates...")
@@ -127,3 +140,4 @@ df_closing_all.drop(columns=["index"], inplace=True)
 
 df_closing_all.to_csv('./closingPrices.csv', index=False)
 df_exchange_USDGBP.to_csv('./USDGBP_exchange.csv', index=False)
+df_markets.to_csv('./markets.csv', index=False)
