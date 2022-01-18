@@ -10,7 +10,6 @@ from utils import getDateFormat, getDayPortfolio
 pd.options.mode.chained_assignment = None 
 
 # Get the data
-print("Reading local data...")
 df_basic = pd.read_csv('./inputs/basic.csv')
 df_other = pd.read_csv('./inputs/other.csv')
 
@@ -37,20 +36,28 @@ tickers_current = getDayPortfolio(df_buys, df_sells)["Name"].explode().unique()
 ########################
 #  Get Overall Market  #
 ########################
-df_spy = web.DataReader("SPY", 'yahoo', minDate, pd.to_datetime("today")).reset_index()
-df_spy = df_spy[["Date", "Adj Close"]]
 
+# Get the data
+df_spy = web.DataReader("SPY", 'yahoo', minDate, pd.to_datetime("today")).reset_index()
 df_ftse = web.DataReader("VUKE.L", 'yahoo', minDate, pd.to_datetime("today")).reset_index()
+df_spy = df_spy[["Date", "Adj Close"]]
 df_ftse = df_ftse[["Date", "Adj Close"]]
 
+# Merge them together
 df_markets = pd.merge(df_spy, df_ftse, on="Date", how="outer", sort=True)
 df_markets = df_markets.rename(columns={"Adj Close_x": "spy", "Adj Close_y": "ftse"})
+
+# Fill df with all days
+dates = pd.date_range(minDate, "today").to_series(name="Date")
+df_markets = pd.merge(dates, df_markets, on="Date", how="left", sort=True)
+
+# Interpolate missing values
+df_markets[["spy", "ftse"]] = df_markets[["spy", "ftse"]].interpolate(limit_area = "inside")
 df_markets = df_markets.fillna(0)
 
 ########################
 #  Get exchange rates  #
 ########################
-print("Getting exchange rates...")
 
 # Get any necessary exchange rates
 df_exchange_USDGBP = web.DataReader("GBPUSD=X", 'yahoo', minDate, pd.to_datetime("today"))
@@ -86,8 +93,6 @@ df_exchange_USDGBP = df_exchange_USDGBP.rename(columns={"Close": "Rate"})
 ######################
 #  Get closing data  #
 ######################
-print("Getting closing data...")
-
 df_closing_all = []
 
 for ticker in tickers_all:
