@@ -1,4 +1,4 @@
-Date,Value,Type,ShareCount,FXRate,Name,Currency
+date,value,type,shareCount,fxRate,ticker,currency
 2010-01-04,-608,BUY,11.869847894259575,1.35,XOM,USD
 2010-01-07,-1057,BUY,212.97761800332194,1.35,PLUG,USD
 2010-01-24,-1142,BUY,39.36925449456771,1.35,JPM,USD
