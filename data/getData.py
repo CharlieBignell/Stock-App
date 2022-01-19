@@ -34,96 +34,106 @@ tickers_currency = df_buys[["ticker", "currency"]].drop_duplicates().reset_index
 # A list of currently held tickers
 tickers_current = getDayPortfolio(df_buys, df_sells)["ticker"].explode().unique() 
 
-# Fill the df with all days from first investment to yeasterday, and linearly interpolate missing values in the given columns
-def fillDays(df, columns, start = minDate, end = yesterday):
-    # Fill df with all days
-    dates = pd.date_range(start, end).to_series(name="date")
-    df = pd.merge(dates, df, on="date", how="left", sort=True)
+# # Fill the df with all days from first investment to yeasterday, and linearly interpolate missing values in the given columns
+# def fillDays(df, columns, start = minDate, end = yesterday):
+#     # Fill df with all days
+#     dates = pd.date_range(start, end).to_series(name="date")
+#     df = pd.merge(dates, df, on="date", how="left", sort=True)
 
-    # Interpolate missing values
-    df[columns] = df[columns].interpolate(limit_area = "inside")
+#     # Interpolate missing values
+#     df[columns] = df[columns].interpolate(limit_area = "inside")
 
-    return df.fillna(0)
+#     return df.fillna(0)
 
-########################
-#  Get Overall Market  #
-########################
+# ########################
+# #  Get Overall Market  #
+# ########################
 
-# Get the data
-df_spy = web.DataReader("SPY", 'yahoo', minDate, yesterday).reset_index()
-df_ftse = web.DataReader("VUKE.L", 'yahoo', minDate, yesterday).reset_index()
-df_spy = df_spy[["Date", "Adj Close"]]
-df_ftse = df_ftse[["Date", "Adj Close"]]
+# # Get the data
+# df_spy = web.DataReader("SPY", 'yahoo', minDate, yesterday).reset_index()
+# df_ftse = web.DataReader("VUKE.L", 'yahoo', minDate, yesterday).reset_index()
+# df_spy = df_spy[["Date", "Adj Close"]]
+# df_ftse = df_ftse[["Date", "Adj Close"]]
 
-# Merge them together
-df_markets = pd.merge(df_spy, df_ftse, on="Date", how="outer", sort=True)
-df_markets = df_markets.rename(columns={"Date": "date", "Adj Close_x": "spy", "Adj Close_y": "ftse"})
+# # Merge them together
+# df_markets = pd.merge(df_spy, df_ftse, on="Date", how="outer", sort=True)
+# df_markets = df_markets.rename(columns={"Date": "date", "Adj Close_x": "spy", "Adj Close_y": "ftse"})
 
-df_markets = fillDays(df_markets, ["spy", "ftse"])
+# df_markets = fillDays(df_markets, ["spy", "ftse"])
 
-########################
-#  Get exchange rates  #
-########################
+# ########################
+# #  Get exchange rates  #
+# ########################
 
-# Get any necessary exchange rates
-df_exchange_USDGBP = web.DataReader("GBPUSD=X", 'yahoo', minDate, yesterday).reset_index()
-df_exchange_USDGBP = df_exchange_USDGBP[["Date", "Close"]]
-df_exchange_USDGBP = df_exchange_USDGBP.rename(columns={"Date": "date", "Close": "close_currency"})
-df_exchange_USDGBP = fillDays(df_exchange_USDGBP, ["close_currency"])
+# # Get any necessary exchange rates
+# df_exchange_USDGBP = web.DataReader("GBPUSD=X", 'yahoo', minDate, yesterday).reset_index()
+# df_exchange_USDGBP = df_exchange_USDGBP[["Date", "Close"]]
+# df_exchange_USDGBP = df_exchange_USDGBP.rename(columns={"Date": "date", "Close": "close_currency"})
+# df_exchange_USDGBP = fillDays(df_exchange_USDGBP, ["close_currency"])
 
-######################
-#  Get closing data  #
-######################
+#####################
+#  Get Ticker Data  #
+#####################
 df_closing_all = []
+df_tickerInfo = []
 
 for ticker in tickers_all:
-
-    df_closing_ticker = []
-
-    # Get the first transaction date for the ticker
-    date_first = df_buys.loc[df_buys["ticker"] == ticker]["date"].min()
-
-    # Get the last transaction date for the ticker, or the current date if it's still being held
-    date_last = yesterday
-    if ticker not in tickers_current:
-        date_last = df_sells.loc[df_sells["ticker"] == ticker]["date"].max()
-
-    # Get the close prices for each day
-    df_closing_ticker = web.DataReader(ticker, 'yahoo', date_first, date_last).reset_index()
-
-    # Make sure we have a 'first' date
-    while date_first != df_closing_ticker["Date"].min():
-        date_first = date_first - timedelta(days=1)
-        df_closing_ticker = web.DataReader(ticker, 'yahoo', date_first, date_last).reset_index()
-
-    # Format the df
-    df_closing_ticker = df_closing_ticker.rename(columns={"Date": "date", "Close": "close_native"})
-    df_closing_ticker = df_closing_ticker[["date", "close_native"]]
-    df_closing_ticker = fillDays(df_closing_ticker, "close_native", date_first, date_last)   
-    df_closing_ticker["ticker"] = ticker
 
     # Get the currency for the current ticker
     tickerCurrency = tickers_currency.loc[tickers_currency["ticker"] == ticker, "currency"].values[0]
 
-    # If it's USD, divide by the exchange rate for the relevant day
-    if tickerCurrency == "USD":
-        df_closing_ticker = pd.merge(df_closing_ticker, df_exchange_USDGBP, how="left", on="date")
-        df_closing_ticker["close_native"] = df_closing_ticker["close_native"]/df_closing_ticker["close_currency"]
-        df_closing_ticker.drop(columns=["close_currency"], inplace=True)
+    if tickerCurrency == "USD" and ticker != "SPY":
+        print(ticker)
+        info = yf.Ticker(ticker).info
+        tickerInfo = [ticker, info["sector"], info["industry"], info["recommendationKey"], info["currentPrice"], info["longName"], info["beta"], info["trailingEps"], info["marketCap"]]
+        print(info)
+        print()
+#     df_tickerInfo.append(info)
 
-    # If it's GBp, divide by 100 to convert to £
-    elif tickerCurrency == "GBP":
-        df_closing_ticker["close_native"] = df_closing_ticker["close_native"]/100
-    else:
-        print("ERROR: Unidentified Currency - ", ticker)
+#     df_closing_ticker = []
 
-    df_closing_ticker = df_closing_ticker.rename(columns={"close_native": "close"})
+#     # Get the first transaction date for the ticker
+#     date_first = df_buys.loc[df_buys["ticker"] == ticker]["date"].min()
 
-    df_closing_all.append(df_closing_ticker)
+#     # Get the last transaction date for the ticker, or the current date if it's still being held
+#     date_last = yesterday
+#     if ticker not in tickers_current:
+#         date_last = df_sells.loc[df_sells["ticker"] == ticker]["date"].max()
 
-# Concatenate all data
-df_closing_all = pd.concat(df_closing_all)
+#     # Get the close prices for each day
+#     df_closing_ticker = web.DataReader(ticker, 'yahoo', date_first, date_last).reset_index()
 
+#     # Make sure we have a 'first' date
+#     while date_first != df_closing_ticker["Date"].min():
+#         date_first = date_first - timedelta(days=1)
+#         df_closing_ticker = web.DataReader(ticker, 'yahoo', date_first, date_last).reset_index()
 
-df_closing_all.to_csv('./closingPrices.csv', index=False)
-df_markets.to_csv('./markets.csv', index=False)
+#     # Format the df
+#     df_closing_ticker = df_closing_ticker.rename(columns={"Date": "date", "Close": "close_native"})
+#     df_closing_ticker = df_closing_ticker[["date", "close_native"]]
+#     df_closing_ticker = fillDays(df_closing_ticker, "close_native", date_first, date_last)   
+#     df_closing_ticker["ticker"] = ticker
+
+#     # If it's USD, divide by the exchange rate for the relevant day
+#     if tickerCurrency == "USD":
+#         df_closing_ticker = pd.merge(df_closing_ticker, df_exchange_USDGBP, how="left", on="date")
+#         df_closing_ticker["close_native"] = df_closing_ticker["close_native"]/df_closing_ticker["close_currency"]
+#         df_closing_ticker.drop(columns=["close_currency"], inplace=True)
+
+#     # If it's GBp, divide by 100 to convert to £
+#     elif tickerCurrency == "GBP":
+#         df_closing_ticker["close_native"] = df_closing_ticker["close_native"]/100
+#     else:
+#         print("ERROR: Unidentified Currency - ", ticker)
+
+#     df_closing_ticker = df_closing_ticker.rename(columns={"close_native": "close"})
+
+#     df_closing_all.append(df_closing_ticker)
+
+# # Concatenate all data
+# df_closing_all = pd.concat(df_closing_all)
+# df_tickerInfo = pd.DataFrame(df_tickerInfo, columns =['ticker', 'full_name', 'sector', 'price', 'rsi_3m', 'eps', 'beta'])
+
+# df_closing_all.to_csv('./closingPrices.csv', index=False)
+# df_markets.to_csv('./markets.csv', index=False)
+# df_tickerInfo.to_csv('./tickerInfo.csv', index=False)
