@@ -82,12 +82,14 @@ for ticker in tickers_all:
     # Get the currency for the current ticker
     tickerCurrency = tickers_currency.loc[tickers_currency["ticker"] == ticker, "currency"].values[0]
 
-    if tickerCurrency == "USD" and ticker != "SPY":
-        print(ticker)
-        info = yf.Ticker(ticker).info
-        tickerInfo = [ticker, info["sector"], info["industry"], info["recommendationKey"], info["currentPrice"], info["longName"], info["beta"], info["trailingEps"], info["marketCap"]]
-        print(info)
-        print()
+    print(ticker)
+    info = yf.Ticker(ticker).info
+    try:
+        tickerInfo = [info["beta"], info["trailingEps"], info["marketCap"]]
+        print(tickerInfo)
+    except KeyError:
+        print("error")
+    print()
 #     df_tickerInfo.append(info)
 
 #     df_closing_ticker = []
