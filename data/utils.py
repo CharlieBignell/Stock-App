@@ -7,9 +7,12 @@ from datetime import timedelta
 def getDateFormat(day, month, year):
     return pd.to_datetime(f"{year}-{month}-{day}")
 
-# Get the number of shares held on a given day, taking splits into account
-def getShares(df, ticker, date):
 
+# Get the number of shares held on a given day, taking splits into account
+def getShares(df, series):
+    ticker = series["ticker"]
+    date = series["date"]
+    
     # Get splits
     splits = yf.Ticker(ticker).splits
     df_split = pd.DataFrame({'date':splits.index, 'split':splits.values})
@@ -19,7 +22,7 @@ def getShares(df, ticker, date):
 
     # Limit to relevant 
     minDate_ticker = df.loc[df["ticker"] == ticker, "date"].min()
-    df_combined.drop(df_combined.loc[df_combined["date"] < minDate_ticker].index, inplace=True)
+    df_combined.drop(df_combined.loc[(df_combined["date"] < minDate_ticker) & (df_combined["date"] > date)].index, inplace=True)
 
     # Format the split column
     df_combined.sort_values(by="date", ascending=False, inplace=True)
