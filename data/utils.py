@@ -9,9 +9,7 @@ def getDateFormat(day, month, year):
 
 
 # Get the number of shares held on a given day, taking splits into account
-def getShares(df, series):
-    ticker = series["ticker"]
-    date = series["date"]
+def getShares(df, ticker, date):
     
     # Get splits
     splits = yf.Ticker(ticker).splits
