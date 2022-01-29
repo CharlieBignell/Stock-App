@@ -1,30 +1,33 @@
 import React, { Component } from "react";
-import '../styles/Details.css';
+import '../styles/Overview.css';
 
 import Header from "../components/Header";
+import TestChart from "../graphs/TestChart";
 
 class Details extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { apiData: "" };
+        this.state = { data: "NULL" };
+
     }
 
     getData() {
         fetch("http://localhost:9000/details")
             .then(res => res.text())
-            .then(res => this.setState({ apiData: res }));
+            .then(res => this.setState({ data: res }));
     }
 
     componentDidMount() {
         this.getData();
     }
 
+
     render() {
         return (
             <div id="main">
-                <Header></Header>
-                <p>{this.state.apiData}</p>
+                <Header />
+                <TestChart data={this.state.data} id="test_1" />
             </div>
         );
     }
