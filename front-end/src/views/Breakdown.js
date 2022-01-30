@@ -26,7 +26,9 @@ class Breakdown extends Component {
         return (
             <div id="main">
                 <Header />
-                <TestChart data={this.state.data} id="test_1" />
+                <div id="content">
+                    <TestChart data={this.state.data} id="test_1" />
+                </div>
             </div>
         );
     }
