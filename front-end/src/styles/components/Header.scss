@@ -4,10 +4,25 @@
     background-color: colours.$primary_light;
     color: white;
     padding: 10px;
+    display: flex;
+    flex-flow: row nowrap;
 }
 
-.navItem {
-    color: white;
+#main_header *{
+    margin: 0;
+}
+
+#navItems :nth-child(2){
+    margin: 0 20px 0 20px;
+}
+
+#navItems * {
+    color: lightgray;
     text-decoration: none;
     font-size: 140%;
+}
+
+.active {
+    text-decoration: underline !important;
+    color: white !important;
 }

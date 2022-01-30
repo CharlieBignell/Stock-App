@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import '../styles/views/Breakdown.scss';
+import { formatNav } from '../utils.js';
 
 import Header from "../components/Header";
 import TestChart from "../graphs/TestChart";
@@ -19,6 +20,7 @@ class Breakdown extends Component {
     }
 
     componentDidMount() {
+        formatNav("item_breakdown")
         this.getData();
     }
 
@@ -32,6 +34,7 @@ class Breakdown extends Component {
             </div>
         );
     }
+
 
 }
 

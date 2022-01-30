@@ -20,7 +20,7 @@ function testChart(data, id) {
         text.innerHTML = "Loading..."
     }else{
         text.innerHTML = "*CHART*"
-        console.log(JSON.parse(data))
+        // console.log(JSON.parse(data))
     }
 }
 

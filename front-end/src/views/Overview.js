@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import '../styles/views/Overview.scss';
+import { formatNav } from '../utils.js';
 
 import Header from "../components/Header";
 import TestChart from "../graphs/TestChart";
@@ -19,6 +20,7 @@ class Overview extends Component {
     }
 
     componentDidMount() {
+        formatNav("item_overview")
         this.getData();
     }
 
