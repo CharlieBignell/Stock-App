@@ -3,7 +3,6 @@ import '../styles/views/Breakdown.scss';
 import { formatNav } from '../utils.js';
 
 import Header from "../components/Header";
-import TestChart from "../graphs/TestChart";
 
 class Breakdown extends Component {
 
@@ -29,7 +28,6 @@ class Breakdown extends Component {
             <div id="main">
                 <Header />
                 <div id="content">
-                    <TestChart data={this.state.data} id="test_1" />
                 </div>
             </div>
         );

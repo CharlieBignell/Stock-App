@@ -3,7 +3,7 @@ import '../styles/views/Overview.scss';
 import { formatNav } from '../utils.js';
 
 import Header from "../components/Header";
-import TestChart from "../graphs/TestChart";
+import LineGraph from "../graphs/LineGraph";
 
 class Overview extends Component {
 
@@ -29,7 +29,7 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
-                    <TestChart data={this.state.data} id="test_1" />
+                    <LineGraph data={this.state.data} id="lineGraph" />
                 </div>
             </div>
         );
