@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import '../styles/Overview.css';
+import '../styles/views/Breakdown.scss';
 
 import Header from "../components/Header";
 import TestChart from "../graphs/TestChart";

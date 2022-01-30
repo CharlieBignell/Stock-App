@@ -16,7 +16,7 @@ class TestChart extends Component {
 
 function testChart(data, id) {
     let text = document.getElementById(id)
-    if(data == "NULL"){
+    if(data === "NULL"){
         text.innerHTML = "Loading..."
     }else{
         text.innerHTML = "*CHART*"

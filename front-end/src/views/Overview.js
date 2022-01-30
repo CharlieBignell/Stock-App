@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import '../styles/Overview.css';
+import '../styles/views/Overview.scss';
 
 import Header from "../components/Header";
 import TestChart from "../graphs/TestChart";
@@ -24,9 +24,11 @@ class Overview extends Component {
 
     render() {
         return (
-            <div id="main">
+            <div id="main_page">
                 <Header />
-                <TestChart data={this.state.data} id="test_1" />
+                <div id="content">
+                    <TestChart data={this.state.data} id="test_1" />
+                </div>
             </div>
         );
     }

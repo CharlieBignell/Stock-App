@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import {Link} from "react-router-dom";
 
-import '../styles/Header.css';
+import '../styles/components/Header.scss';
 
 class Header extends Component {
   render() {
     return (
-      <div>
-          <Link to="/overview">Overview | </Link>
-          <Link to="/breakdown">Breakdown | </Link>
-          <Link to="/details">Details</Link>
+      <div id = "main_header">
+          <Link to="/overview" class = "navItem">Overview | </Link>
+          <Link to="/breakdown" class = "navItem">Breakdown | </Link>
+          <Link to="/details" class = "navItem">Details </Link>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import { render } from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-import './styles/index.css';
+import './styles/index.scss';
 
 import Overview from "./views/Overview";
 import Breakdown from "./views/Breakdown";

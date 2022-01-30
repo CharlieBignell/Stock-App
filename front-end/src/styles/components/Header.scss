@@ -1,0 +1,13 @@
+@use '../colours';
+
+#main_header {
+    background-color: colours.$primary_light;
+    color: white;
+    padding: 10px;
+}
+
+.navItem {
+    color: white;
+    text-decoration: none;
+    font-size: 140%;
+}
