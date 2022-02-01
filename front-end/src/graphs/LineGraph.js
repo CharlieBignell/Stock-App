@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import * as d3 from 'd3'
+import '../styles/graphs/LineGraph.scss';
 
 class LineGraph extends Component {
     componentDidMount() {
@@ -13,14 +14,15 @@ class LineGraph extends Component {
 
     render() {
         return <div id={this.props.id}>
-            <div id="tooltip" className="tooltip">
-                <div className="tooltip-date">
+            <div className="tooltip_lineGraph">
+                <div className="tooltip_date">
                     <span id="date"></span>
                 </div>
-                <div className="tooltip-vals">
-                    <p>ITM: <span id="amount_ITM_val"></span></p>
-                    <p>Value: <span id="value_val"></span></p>
-                    <p>Return: <span id="amount_return_cum_val"></span></p>
+                <div className="tooltip_items">
+                    <div className="tooltip_item"><p>In the Market</p><span id="amount_ITM_val"></span></div>
+                    <div className="tooltip_item"><p>Return</p><span id="amount_return_cum_val"></span></div>
+                    <hr></hr>
+                    <div className="tooltip_item"><p>Value</p><span id="value_val"></span></div>
                 </div>
             </div>
         </div>
@@ -34,6 +36,8 @@ function lineGraph(data, id) {
     // Clean code, rename where needed
     // Auto abbreviations
     // Auto max y
+    // Check dimensions are correct
+    // Add loading back in
 
     // Add moving avgs
     // Scrollable/zoomable
@@ -178,16 +182,16 @@ function lineGraph(data, id) {
                 .append("circle")
                 .attr("class", "tooltip-circle")
                 .attr("id", l + "_circ")
-                .attr("r", 4)
-                .attr("stroke", "#af9358")
-                .attr("fill", "white")
-                .attr("stroke-width", 2)
+                .attr("r", 5)
+                .attr("stroke", "white")
+                .attr("fill", colours[i])
+                .attr("stroke-width", 3)
                 .style("opacity", 0);
         })
 
         const listeningRect = bounds
             .append("rect")
-            .attr("class", "listening-rect")
+            .attr("class", "listening_rect")
             .attr("width", dimensions.boundedWidth)
             .attr("height", dimensions.boundedHeight)
             .on('mousemove', function (event) { onMouseMove(event) })
@@ -218,7 +222,7 @@ function lineGraph(data, id) {
                 const closestYValue = a(closestDataPoint)
                 const formatValue = (x) => "£" + `${(x / 1000).toFixed(0)}` + "k"
                 d3.select(`#${lines[i]}_val`).html(formatValue(closestYValue))
-                y = Math.max(y, yScale(closestYValue) + dimensions.margin.top)
+                y = Math.max(y, yScale(closestYValue))
                 let circle = d3.select(`#${lines[i]}_circ`)
                 circle
                     .attr("cx", xScale(closestXValue))
@@ -236,7 +240,7 @@ function lineGraph(data, id) {
             //shift our tooltip, and hide/show our tooltip appropriately
 
             tooltip
-                .style("transform", `translate(` + `calc( -35% + ${x}px),` + `${y}px` + `)`)
+                .style("transform", `translate(` + `calc( -35% + ${x}px),` + `calc(-100% + ${event.clientY}px)` + `)`)
                 .style("opacity", 1)
 
             xAxisLine.attr("x", xScale(closestXValue));
@@ -253,12 +257,7 @@ function lineGraph(data, id) {
         }
 
         // Add a circle under our tooltip, right over the “hovered” point
-        const tooltip = d3.select("#tooltip");
-
-
-
-
-
+        const tooltip = d3.select(".tooltip_lineGraph");
 
     }
 }

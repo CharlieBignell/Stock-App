@@ -1,0 +1,75 @@
+@use '../colours';
+
+.domain {
+    stroke: none;
+}
+
+.tick>line {
+    stroke: colours.$gridline !important;
+    stroke-width: 2.5px;
+}
+
+
+.listening_rect {
+    fill: transparent;
+    // fill: rgba(1, 1, 1, 0.2)
+}
+
+.dotted {
+    stroke: colours.$gridline;
+    stroke-dasharray: 5 10;
+    fill: none;
+}
+
+.tooltip_lineGraph {
+    opacity: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: -14px;
+    left: 0;
+    padding: 0.6em 1em;
+    text-align: center;
+    line-height: 1.4em;
+    font-size: 0.9em;
+    border: 2px solid white;
+    border-radius: 10px;
+    pointer-events: none;
+    width: 140px;
+}
+
+.tooltip_date {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+    font-size: 1.1em;
+    line-height: 1.4em;
+}
+
+.tooltip_items{
+    text-align: left;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.tooltip_item > p{
+    margin: 0;
+    color: lightgrey !important;
+}
+
+#amount_ITM_val, #value_val, #amount_return_cum_val{
+    color: white;
+    font-weight: 500;
+}
+
+.tooltip_item{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.tooltip_item > *{
+   margin: 0; 
+}
+
+hr{
+    margin: 2px 0 2px 0;
+}
