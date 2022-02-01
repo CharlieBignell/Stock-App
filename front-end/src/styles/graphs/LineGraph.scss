@@ -4,26 +4,19 @@
     stroke: none;
 }
 
-.tick>line {
+.tick > line {
     stroke: colours.$gridline !important;
     stroke-width: 2.5px;
 }
 
-
-.listening_rect {
-    fill: transparent;
-    // fill: rgba(1, 1, 1, 0.2)
-}
-
 .dotted {
     stroke: colours.$gridline;
-    stroke-dasharray: 5 10;
-    fill: none;
+    stroke-width: 2px;
 }
 
 .tooltip_lineGraph {
     opacity: 0;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(1, 1, 1, 0.3);
     position: absolute;
     top: -14px;
     left: 0;
