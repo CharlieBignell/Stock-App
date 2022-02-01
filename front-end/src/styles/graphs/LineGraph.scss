@@ -24,10 +24,11 @@
     text-align: center;
     line-height: 1.4em;
     font-size: 0.9em;
-    border: 2px solid white;
+    border: 2px solid rgb(161, 161, 161);
     border-radius: 10px;
     pointer-events: none;
     width: 140px;
+    box-shadow: 0 0 8px 3px rgb(37, 37, 37);
 }
 
 .tooltip_date {
@@ -45,8 +46,21 @@
 
 .tooltip_item > p{
     margin: 0;
-    color: lightgrey !important;
 }
+
+#amount_ITM_name{
+    color: colours.$yellow;
+}
+
+#value_name{
+    color: colours.$blue;
+
+}
+
+#amount_return_cum_name{
+    color: colours.$green;
+}
+
 
 #amount_ITM_val, #value_val, #amount_return_cum_val{
     color: white;

@@ -14,15 +14,16 @@ class LineGraph extends Component {
 
     render() {
         return <div id={this.props.id}>
+            <div id="loading_lineGraph"></div>
             <div className="tooltip_lineGraph">
                 <div className="tooltip_date">
                     <span id="date"></span>
                 </div>
                 <div className="tooltip_items">
-                    <div className="tooltip_item"><p>In the Market</p><span id="amount_ITM_val"></span></div>
-                    <div className="tooltip_item"><p>Return</p><span id="amount_return_cum_val"></span></div>
+                    <div className="tooltip_item"><p id="amount_ITM_name">In the Market</p><span id="amount_ITM_val"></span></div>
+                    <div className="tooltip_item"><p id="amount_return_cum_name">Return</p><span id="amount_return_cum_val"></span></div>
                     <hr></hr>
-                    <div className="tooltip_item"><p>Value</p><span id="value_val"></span></div>
+                    <div className="tooltip_item"><p id="value_name">Value</p><span id="value_val"></span></div>
                 </div>
             </div>
         </div>
@@ -32,12 +33,8 @@ class LineGraph extends Component {
 function lineGraph(data, id) {
     //TODO
 
-    // Auto abbreviations
-    // Auto max y
-    // Check dimensions are correct
-    // Add loading back in
-    // Sdd shadows
-
+    // Add gradient fill/shadow to lines
+    // Sort colours
     // Add moving avgs
     // only keep 1/x e.g. 1 in 7. Then smooth the points?
     // Scrollable/zoomable
@@ -45,29 +42,26 @@ function lineGraph(data, id) {
     // Add args (lines/data items, default date range, moving avg)
 
     // Add loading text
-    let container = document.getElementById(id)
-    // let text = document.createElement('p')
-    // text.innerHTML = "Loading..."
-    // container.appendChild(text)
+    let container_loading = document.getElementById("loading_lineGraph")
+    let text = document.createElement('p')
+    text.innerHTML = "Loading..."
+    container_loading.appendChild(text)
 
     // If we have the data, draw the graph
     if (data !== "NULL") {
 
-        // Clear the container (i.e. the loading text)
-        // while (container.firstChild) {
-        // container.removeChild(container.lastChild);
-        // }
+        // Clear the loading text
+        while (container_loading.firstChild) {
+            container_loading.removeChild(container_loading.lastChild);
+        }
 
         // Extract the right dataset
         const dataset = JSON.parse(data)[1]
 
-        const dateParser_axis = d3.timeParse("%Y-%m-%d")
-        const dateParser_tooltip = d3.timeFormat("%B %-d %Y");
-
         // Initialise dimensions
         const dimensions = {
-            width: 1100, // MAKE RESPONSIVE
-            height: 600, // MAKE RESPONSIVE
+            width: 1100,
+            height: 600,
             margin: {
                 top: 20,
                 right: 20,
@@ -78,6 +72,9 @@ function lineGraph(data, id) {
 
         dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
         dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
+
+        const dateParser_axis = d3.timeParse("%Y-%m-%d")
+        const dateParser_tooltip = d3.timeFormat("%B %-d %Y");
 
         // Add the svg element to the container
         const svg = d3.select(`#${id}`)
@@ -101,7 +98,7 @@ function lineGraph(data, id) {
 
         // The lines we want to draw
         const lines = ["value", "amount_ITM", "amount_return_cum"]
-        const colours = ["#5FADD7", "#FF3165", "#65B89F"]
+        const colours = ["#237ec9", "#dfd32f", "#38c581"]
 
         // Parse the x-axis values as dates
         const xAccessor = (d) => dateParser_axis(d.date)
@@ -132,7 +129,18 @@ function lineGraph(data, id) {
             .scale(yScale)
             .ticks(7)
             .tickSize(-dimensions.boundedWidth, 0, 0)
-            .tickFormat(x => `£${(x / 1000).toFixed(0)}k`)
+            .tickFormat(function (x) {
+                x = Math.round(parseFloat(x))
+                let xLength = Math.abs(x).toString().length
+                let format = `£${(x)}`
+
+                if (xLength >= 4 && xLength <= 6) {
+                    format = `£${(x / 1000).toFixed(0)}k`
+                } else if (xLength > 6) {
+                    format = `£${(x / 1000000).toFixed(0)}M`
+                }
+                return format
+            })
             .tickPadding(10)
 
         bounds.append("g")
@@ -223,8 +231,22 @@ function lineGraph(data, id) {
                 const closestYValue = a(closestDataPoint)
 
                 // Format the display value
-                const formatValue = (x) => `£${(x / 1000).toFixed(0)}k`
-                d3.select(`#${lines[i]}_val`).html(formatValue(closestYValue))
+                const formatValue = function (x) {
+                    x = Math.round(parseFloat(x))
+                    let xLength = Math.abs(x).toString().length
+                    let format = `£${(x)}`
+
+                    if (xLength >= 4 && xLength <= 6) {
+                        format = `£${(x / 1000).toFixed(0)}k`
+                    } else if (xLength > 6) {
+                        format = `£${(x / 1000000).toFixed(0)}M`
+                    }
+                    return format
+                }
+
+                d3.select(`#${lines[i]}_val`)
+                    .html(formatValue(closestYValue))
+                    .attr("color", "black")
 
                 // Update the position of the tooltip marker
                 d3.select(`#${lines[i]}_circ`)
