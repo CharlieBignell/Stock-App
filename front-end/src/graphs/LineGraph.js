@@ -13,12 +13,14 @@ class LineGraph extends Component {
 
     render() {
         return <div id={this.props.id}>
-            <div id="tooltip" class="tooltip">
-                <div class="tooltip-date">
+            <div id="tooltip" className="tooltip">
+                <div className="tooltip-date">
                     <span id="date"></span>
                 </div>
-                <div class="tooltip-Internet">
-                    Internet Usage: <span id="internet"></span>
+                <div className="tooltip-vals">
+                    <p>ITM: <span id="amount_ITM_val"></span></p>
+                    <p>Value: <span id="value_val"></span></p>
+                    <p>Return: <span id="amount_return_cum_val"></span></p>
                 </div>
             </div>
         </div>
@@ -27,26 +29,29 @@ class LineGraph extends Component {
 
 function lineGraph(data, id) {
     //TODO
-    // Tooltip
-    // Scrollable/zoomable
-    // Legemd
-    // Switch view ()
+    
+    // Check and format Tooltip
+    // Clean code, rename where needed
+    // Auto abbreviations
+    // Auto max y
+
     // Add moving avgs
-    // Responsive dimensions
+    // Scrollable/zoomable
+    // Add args (lines/data items, default date range, moving avg)
 
     // Add loading text
     let container = document.getElementById(id)
-    let text = document.createElement('p')
-    text.innerHTML = "Loading..."
-    container.appendChild(text)
+    // let text = document.createElement('p')
+    // text.innerHTML = "Loading..."
+    // container.appendChild(text)
 
     // If we have the data, draw the graph
     if (data !== "NULL") {
 
         // Clear the container (i.e. the loading text)
-        while (container.firstChild) {
-            container.removeChild(container.lastChild);
-        }
+        // while (container.firstChild) {
+        // container.removeChild(container.lastChild);
+        // }
 
         // Extract the right dataset
         let dataset = JSON.parse(data)[1]
@@ -84,9 +89,13 @@ function lineGraph(data, id) {
         // The lines we want to draw
         let lines = ["value", "amount_ITM", "amount_return_cum"]
         let colours = ["#5FADD7", "#FF3165", "#65B89F"]
+        let yAccessors = []
+        // let lines = ["amount_ITM"]
+        // let colours = ["#5FADD7"]
+
 
         // Calculate the max/min of the y-axis
-        let max_all = 600000 // TODO: AUTO GENERATE
+        let max_all = 50000 // TODO: AUTO GENERATE
         let min_all = 0
 
         lines.forEach(function (l) {
@@ -150,6 +159,7 @@ function lineGraph(data, id) {
         // Draw each line
         lines.forEach(function (l, i) {
             const yAccessor = (d) => d[l];
+            yAccessors.push(yAccessor)
 
             const lineGenerator = d3
                 .line()
@@ -164,85 +174,88 @@ function lineGraph(data, id) {
                 .attr("stroke", colours[i])
                 .attr("stroke-width", 3)
 
-
-
-                
-            const listeningRect = bounds
-                .append("rect")
-                .attr("class", "listening-rect")
-                .attr("width", dimensions.boundedWidth)
-                .attr("height", dimensions.boundedHeight)
-                .on("mousemove", onMouseMove)
-                .on("mouseleave", onMouseLeave);
-
-            const xAxisLine = bounds
-                .append("g")
-                .append("rect")
-                .attr("class", "dotted")
-                .attr("stroke-width", "1px")
-                .attr("width", ".5px")
-                .attr("height", dimensions.boundedHeight);
-
-            //.style("transform", `translate(${0}px,${-5}px)`);
-            function onMouseMove() {
-                const mousePosition = d3.pointer(this);
-                const hoveredDate = xScale.invert(mousePosition[0]);
-
-                const getDistanceFromHoveredDate = (d) =>
-                    Math.abs(xAccessor(d) - hoveredDate);
-                const closestIndex = d3.scan(
-                    dataset,
-                    (a, b) => getDistanceFromHoveredDate(a) - getDistanceFromHoveredDate(b)
-                );
-                const closestDataPoint = dataset[closestIndex];
-                console.table(closestDataPoint);
-
-                const closestXValue = xAccessor(closestDataPoint);
-                const closestYValue = yAccessor(closestDataPoint);
-
-                const formatDate = d3.timeFormat("%B %A %-d, %Y");
-                tooltip.select("#date").text(formatDate(closestXValue));
-
-                const formatInternetUsage = (d) => `${d3.format(".1f")(d)} GB`;
-                tooltip.select("#internet").html(formatInternetUsage(closestYValue));
-
-                const x = xScale(closestXValue) + dimensions.margin.left;
-                const y = yScale(closestYValue) + dimensions.margin.top;
-
-                //Grab the x and y position of our closest point,
-                //shift our tooltip, and hide/show our tooltip appropriately
-
-                tooltip.style(
-                    "transform",
-                    `translate(` + `calc( -50% + ${x}px),` + `calc(-100% + ${y}px)` + `)`
-                );
-
-                tooltip.style("opacity", 1);
-
-                tooltipCircle
-                    .attr("cx", xScale(closestXValue))
-                    .attr("cy", yScale(closestYValue))
-                    .style("opacity", 1);
-
-                xAxisLine.attr("x", xScale(closestXValue));
-            }
-
-            function onMouseLeave() {
-                tooltip.style("opacity", 0);
-                tooltipCircle.style("opacity", 0);
-            }
-
-            // Add a circle under our tooltip, right over the “hovered” point
-            const tooltip = d3.select("#tooltip");
             const tooltipCircle = bounds
                 .append("circle")
                 .attr("class", "tooltip-circle")
+                .attr("id", l + "_circ")
                 .attr("r", 4)
                 .attr("stroke", "#af9358")
                 .attr("fill", "white")
                 .attr("stroke-width", 2)
                 .style("opacity", 0);
         })
+
+        const listeningRect = bounds
+            .append("rect")
+            .attr("class", "listening-rect")
+            .attr("width", dimensions.boundedWidth)
+            .attr("height", dimensions.boundedHeight)
+            .on('mousemove', function (event) { onMouseMove(event) })
+            // .on("mouseleave", onMouseLeave)
+
+        const xAxisLine = bounds
+            .append("g")
+            .append("rect")
+            .attr("class", "dotted")
+            .attr("stroke-width", "1px")
+            .attr("width", ".5px")
+            .attr("height", dimensions.boundedHeight);
+
+        //.style("transform", `translate(${0}px,${-5}px)`);
+        function onMouseMove(event) {
+            const mousePosition = d3.pointer(event);
+            const hoveredDate = xScale.invert(mousePosition[0]);
+
+            const getDistanceFromHoveredDate = (d) => Math.abs(xAccessor(d) - hoveredDate);
+            const closestIndex = d3.scan(dataset, (a, b) => getDistanceFromHoveredDate(a) - getDistanceFromHoveredDate(b));
+            const closestDataPoint = dataset[closestIndex];
+
+            const closestXValue = xAccessor(closestDataPoint);
+
+            let y = 0
+
+            yAccessors.forEach(function (a, i) {
+                const closestYValue = a(closestDataPoint)
+                const formatValue = (x) => "£" + `${(x / 1000).toFixed(0)}` + "k"
+                d3.select(`#${lines[i]}_val`).html(formatValue(closestYValue))
+                y = Math.max(y, yScale(closestYValue) + dimensions.margin.top)
+                let circle = d3.select(`#${lines[i]}_circ`)
+                circle
+                    .attr("cx", xScale(closestXValue))
+                    .attr("cy", yScale(closestYValue))
+                    .style("opacity", 1)
+            })
+
+
+            const formatDate = d3.timeFormat("%B %-d %Y");
+            tooltip.select("#date").text(formatDate(closestXValue));
+
+            const x = xScale(closestXValue) + dimensions.margin.left;
+
+            //Grab the x and y position of our closest point,
+            //shift our tooltip, and hide/show our tooltip appropriately
+
+            tooltip
+                .style("transform", `translate(` + `calc( -35% + ${x}px),` + `${y}px` + `)`)
+                .style("opacity", 1)
+
+            xAxisLine.attr("x", xScale(closestXValue));
+        }
+
+        function onMouseLeave() {
+            console.log("tesxt")
+            lines.forEach(function (l, i) {
+                let circle = d3.select(`#${l}_circ`)
+                circle.style("opacity", 0);
+            })
+            tooltip.style("opacity", 0);
+
+        }
+
+        // Add a circle under our tooltip, right over the “hovered” point
+        const tooltip = d3.select("#tooltip");
+
+
 
 
 
