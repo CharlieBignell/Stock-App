@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import '../styles/views/Overview.scss';
-import { formatNav } from '../utils.js';
+import { formatNav, red, green, blue } from '../utils.js';
 
 import Header from "../components/Header";
 import LineGraph from "../graphs/LineGraph";
@@ -29,8 +29,17 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
-                    <LineGraph data={this.state.data} id="lineGraph" />
+                    <LineGraph 
+                        data={this.state.data} 
+                        id="lineGraph" 
+                        movingAvgWin={1} 
+                        lines={["value", "amount_ITM", "amount_return_cum"]} 
+                        colours={[blue, green, red]}
+                        dateRange={"m"}
+                    />
                 </div>
+
+
             </div>
         );
     }

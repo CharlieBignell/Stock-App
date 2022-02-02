@@ -1,16 +1,17 @@
 import React, { Component } from "react";
-import { formatValue, movingAvg } from '../utils.js';
+import { formatValue, getMovingAvgs, setRange } from '../utils.js';
 
 import * as d3 from 'd3'
+
 import '../styles/graphs/LineGraph.scss';
 
 class LineGraph extends Component {
     componentDidMount() {
-        lineGraph(this.props.data, this.props.id)
+        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.lines, this.props.colours, this.props.dateRange)
     }
 
     componentDidUpdate() {
-        lineGraph(this.props.data, this.props.id)
+        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.lines, this.props.colours, this.props.dateRange)
     }
 
     render() {
@@ -31,14 +32,7 @@ class LineGraph extends Component {
     }
 }
 
-function lineGraph(data, id) {
-    //TODO
-
-    // Add moving avgs
-    // only keep 1/x e.g. 1 in 7. Then smooth the points?
-    // Scrollable/zoomable
-    // Auto date format
-    // Add args (lines/data items, default date range, moving avg)
+function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
 
     // Add loading text
     let container_loading = document.getElementById("loading_lineGraph")
@@ -54,42 +48,41 @@ function lineGraph(data, id) {
             container_loading.removeChild(container_loading.lastChild);
         }
 
-        // Extract the right dataset
-        const dataset = JSON.parse(data)[1]
-
-        let values = dataset.map(r => parseFloat(r.value));
-        let values_mva = movingAvg(values, 300)
-
-        let itm = dataset.map(r => parseFloat(r.amount_ITM));
-        let itm_ma = movingAvg(itm, 300)
-
-        let returns = dataset.map(r => parseFloat(r.amount_return_cum));
-        let returns_ma = movingAvg(returns, 300)
-
-        // Need to be able to map back
-        dataset.forEach(function(row, i){
-            row.value_ma = values_mva[i]
-            row.itm_ma = itm_ma[i]
-            row.return_ma = returns_ma[i]
-        })
+        // Extract the right dataset and generate the rquired moving avg lines
+        let dataset = JSON.parse(data)[1]
+        dataset = setRange(dataset, dateRange)
+        dataset = getMovingAvgs(dataset, lines, movingAvgWin)
 
         // Initialise dimensions
         const dimensions = {
             width: 1100,
             height: 600,
             margin: {
-                top: 20,
-                right: 20,
+                top: 50,
+                right: 50,
                 bottom: 50,
                 left: 90,
             },
         }
-
         dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
         dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
 
-        const dateParser_axis = d3.timeParse("%Y-%m-%d")
-        const dateParser_tooltip = d3.timeFormat("%B %-d %Y");
+        // Date parsers - one for the acis and one for the tooltip
+        let dateParser_axis = d3.timeParse("%Y-%m-%d")
+        let dateParser_tooltip = d3.timeFormat("%B %-d %Y")
+
+        // switch (dateRange) {
+        //     case "y":
+        //         dateParser_axis = d3.timeParse("%%m-%d")
+        //         break;
+        //     case "m":
+        //         dateParser_axis = d3.timeParse("%Y-%m-%d")
+        //         break;
+        //     case "w":
+        //         dateParser_axis = d3.timeParse("%Y-%m-%d")
+        //         break;
+
+        }
 
         // Add the svg element to the container
         const svg = d3.select(`#${id}`)
@@ -112,10 +105,6 @@ function lineGraph(data, id) {
             .on('mousemove', function (event) { onMouseMove(event) })
             .on("mouseout", function () { onMouseLeave() })
 
-        // The lines we want to draw
-        const lines = ["value_ma", "itm_ma", "return_ma"]
-        const colours = ["#6bade2", "#72ca76", "#e78380"]
-
         // Parse the x-axis values as dates
         const xAccessor = (d) => dateParser_axis(d.date)
 
@@ -127,8 +116,8 @@ function lineGraph(data, id) {
         let min_all = 0
         lines.forEach(function (l) {
 
-            let max = Math.max.apply(Math, dataset.map(function (i) { return i[l] }))
-            let min = Math.min.apply(Math, dataset.map(function (i) { return i[l] }))
+            let max = Math.max.apply(Math, dataset.map(function (i) { return i[`${l}_ma`] }))
+            let min = Math.min.apply(Math, dataset.map(function (i) { return i[`${l}_ma`] }))
 
             max_all = max > max_all ? max : max_all
             min_all = min < min_all ? min : min_all
@@ -190,7 +179,7 @@ function lineGraph(data, id) {
         lines.forEach(function (l, i) {
 
             // Add the accessor to later help us with the tooltip
-            const yAccessor = (d) => d[l]
+            const yAccessor = (d) => d[`${l}_ma`]
             yAccessors.push(yAccessor)
 
             // Draw the line
