@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { formatValue, movingAvg } from '../utils.js';
 
 import * as d3 from 'd3'
 import '../styles/graphs/LineGraph.scss';
@@ -33,8 +34,6 @@ class LineGraph extends Component {
 function lineGraph(data, id) {
     //TODO
 
-    // Add gradient fill/shadow to lines
-    // Sort colours
     // Add moving avgs
     // only keep 1/x e.g. 1 in 7. Then smooth the points?
     // Scrollable/zoomable
@@ -57,6 +56,22 @@ function lineGraph(data, id) {
 
         // Extract the right dataset
         const dataset = JSON.parse(data)[1]
+
+        let values = dataset.map(r => parseFloat(r.value));
+        let values_mva = movingAvg(values, 300)
+
+        let itm = dataset.map(r => parseFloat(r.amount_ITM));
+        let itm_ma = movingAvg(itm, 300)
+
+        let returns = dataset.map(r => parseFloat(r.amount_return_cum));
+        let returns_ma = movingAvg(returns, 300)
+
+        // Need to be able to map back
+        dataset.forEach(function(row, i){
+            row.value_ma = values_mva[i]
+            row.itm_ma = itm_ma[i]
+            row.return_ma = returns_ma[i]
+        })
 
         // Initialise dimensions
         const dimensions = {
@@ -93,12 +108,13 @@ function lineGraph(data, id) {
             .attr("fill", "transparent")
             .attr("width", dimensions.boundedWidth)
             .attr("height", dimensions.boundedHeight)
+            .attr("cursor", "crosshair")
             .on('mousemove', function (event) { onMouseMove(event) })
             .on("mouseout", function () { onMouseLeave() })
 
         // The lines we want to draw
-        const lines = ["value", "amount_ITM", "amount_return_cum"]
-        const colours = ["#237ec9", "#dfd32f", "#38c581"]
+        const lines = ["value_ma", "itm_ma", "return_ma"]
+        const colours = ["#6bade2", "#72ca76", "#e78380"]
 
         // Parse the x-axis values as dates
         const xAccessor = (d) => dateParser_axis(d.date)
@@ -129,18 +145,7 @@ function lineGraph(data, id) {
             .scale(yScale)
             .ticks(7)
             .tickSize(-dimensions.boundedWidth, 0, 0)
-            .tickFormat(function (x) {
-                x = Math.round(parseFloat(x))
-                let xLength = Math.abs(x).toString().length
-                let format = `£${(x)}`
-
-                if (xLength >= 4 && xLength <= 6) {
-                    format = `£${(x / 1000).toFixed(0)}k`
-                } else if (xLength > 6) {
-                    format = `£${(x / 1000000).toFixed(0)}M`
-                }
-                return format
-            })
+            .tickFormat((x) => formatValue(x))
             .tickPadding(10)
 
         bounds.append("g")
@@ -212,6 +217,8 @@ function lineGraph(data, id) {
                 .attr("fill", colours[i])
                 .attr("stroke-width", 3)
                 .style("opacity", 0)
+
+
         })
 
         function onMouseMove(event) {
@@ -229,20 +236,6 @@ function lineGraph(data, id) {
             yAccessors.forEach(function (a, i) {
                 // Get the closest point
                 const closestYValue = a(closestDataPoint)
-
-                // Format the display value
-                const formatValue = function (x) {
-                    x = Math.round(parseFloat(x))
-                    let xLength = Math.abs(x).toString().length
-                    let format = `£${(x)}`
-
-                    if (xLength >= 4 && xLength <= 6) {
-                        format = `£${(x / 1000).toFixed(0)}k`
-                    } else if (xLength > 6) {
-                        format = `£${(x / 1000000).toFixed(0)}M`
-                    }
-                    return format
-                }
 
                 d3.select(`#${lines[i]}_val`)
                     .html(formatValue(closestYValue))
