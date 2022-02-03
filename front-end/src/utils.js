@@ -3,6 +3,9 @@ import moment from 'moment';
 export let red = "#e78380"
 export let blue = "#6bade2"
 export let green = "#72ca76"
+export let yellow = "#f0ec79"
+export let purple = "#bd63eb"
+export let orange = "#c99b46"
 
 // Change the active nav item
 export function formatNav(target) {
@@ -120,7 +123,21 @@ export function setRange(data, range) {
             }
         })
     }
-    console.log(result)
 
     return result
+}
+
+export function getReturns(data, column, dateRange){
+    data = setRange(data, dateRange)
+    let startVal = data[0][column]
+    
+    let counter = 1
+    while(startVal == 0){
+        startVal = data[counter][column]
+        counter++
+    }
+
+    let endVal = data[data.length - 1][column]
+
+    return (((endVal/startVal) - 1)*100).toFixed(2)
 }

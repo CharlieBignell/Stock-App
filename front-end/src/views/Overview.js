@@ -1,15 +1,19 @@
 import React, { Component } from "react";
 import '../styles/views/Overview.scss';
-import { formatNav, red, green, blue } from '../utils.js';
+import { formatNav, red, green, blue, yellow, orange, purple } from '../utils.js';
 
 import Header from "../components/Header";
 import LineGraph from "../graphs/LineGraph";
+import BarChart from "../graphs/BarChart";
 
 class Overview extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { data: "NULL" };
+        this.state = { 
+            data: "NULL" ,
+            dateRange: "y"
+        };
 
     }
 
@@ -29,13 +33,19 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
-                    <LineGraph 
+                    {/* <LineGraph 
                         data={this.state.data} 
                         id="lineGraph" 
                         movingAvgWin={200} 
                         lines={["value", "amount_ITM", "amount_return_cum"]} 
                         colours={[blue, green, red]}
-                        dateRange={"a"}
+                        dateRange={this.state.dateRange}
+                    /> */}
+                    <BarChart
+                        data = {this.state.data}
+                        id = "barChart"
+                        colours = {[blue, green, red, yellow, purple, orange]}
+                        dateRange={this.state.dateRange}
                     />
                 </div>
 
