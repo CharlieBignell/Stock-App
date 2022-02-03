@@ -64,8 +64,8 @@ export function movingAvg(values, window) {
 // Apply movingAvg to a range of columns and add to the original dataset
 export function getMovingAvgs(data, values, win) {
 
-    if(data.length/win < 5){
-        win = Math.ceil(data.length/5)
+    if (data.length / win < 5) {
+        win = Math.ceil(data.length / 5)
     }
 
     // Calculate moveing average for each column
@@ -94,16 +94,16 @@ export function getMovingAvgs(data, values, win) {
 }
 
 // Limit a dataset by the given date range
-export function setRange(data, range){
+export function setRange(data, range) {
     let result = []
 
     let start = moment().subtract(8, "days")
     let end = moment().add(1, "days")
 
-    if(range == "a"){
+    if (range == "a") {
         result = data
-    }else{
-        switch(range){
+    } else {
+        switch (range) {
             case "w":
                 break;
             case "m":
@@ -120,6 +120,7 @@ export function setRange(data, range){
             }
         })
     }
+    console.log(result)
 
     return result
 }

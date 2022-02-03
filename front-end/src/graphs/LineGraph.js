@@ -67,21 +67,26 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
         dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
         dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
 
-        // Date parsers - one for the acis and one for the tooltip
+        // Date parsers - one for the axis and one for the tooltip
         let dateParser_axis = d3.timeParse("%Y-%m-%d")
         let dateParser_tooltip = d3.timeFormat("%B %-d %Y")
 
-        // switch (dateRange) {
-        //     case "y":
-        //         dateParser_axis = d3.timeParse("%%m-%d")
-        //         break;
-        //     case "m":
-        //         dateParser_axis = d3.timeParse("%Y-%m-%d")
-        //         break;
-        //     case "w":
-        //         dateParser_axis = d3.timeParse("%Y-%m-%d")
-        //         break;
+        // For all, just show the year
+        let dateFormat_axis = d3.timeFormat("%Y")
 
+        switch (dateRange) {
+            // For year, show the month and year
+            case "y":
+                dateFormat_axis = d3.timeFormat("%b")
+                break;
+            // For month, show the month(num) and day
+            case "m":
+                dateFormat_axis = d3.timeFormat("%b %d")
+                break;
+            // For week, show the month(abbr) and day
+            case "w":
+                // dateFormat_axis = d3.timeFormat("%b %d")
+                break;
         }
 
         // Add the svg element to the container
@@ -158,7 +163,7 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
             .tickPadding(15)
 
         bounds.append("g")
-            .call(xAxisGenerator.tickFormat(d3.timeFormat("%Y")))
+            .call(xAxisGenerator.tickFormat(dateFormat_axis))
             .style("transform", `translateY(${dimensions.boundedHeight}px)`)
             .attr("color", "#676C72")
             .attr("font-size", "110%")

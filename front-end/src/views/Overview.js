@@ -32,10 +32,10 @@ class Overview extends Component {
                     <LineGraph 
                         data={this.state.data} 
                         id="lineGraph" 
-                        movingAvgWin={1} 
+                        movingAvgWin={200} 
                         lines={["value", "amount_ITM", "amount_return_cum"]} 
                         colours={[blue, green, red]}
-                        dateRange={"m"}
+                        dateRange={"a"}
                     />
                 </div>
 
