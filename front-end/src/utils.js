@@ -127,17 +127,36 @@ export function setRange(data, range) {
     return result
 }
 
-export function getReturns(data, column, dateRange){
+export function getReturns(data, column, dateRange) {
     data = setRange(data, dateRange)
     let startVal = data[0][column]
-    
+
     let counter = 1
-    while(startVal == 0){
+    while (startVal == 0) {
         startVal = data[counter][column]
         counter++
     }
 
     let endVal = data[data.length - 1][column]
 
-    return (((endVal/startVal) - 1)*100).toFixed(2)
+    return (((endVal / startVal) - 1) * 100).toFixed(2)
+}
+
+export function roundedRect(x, y, w, h, r, tl, tr, bl, br) {
+    var retval;
+    retval = "M" + (x + r) + "," + y;
+    retval += "h" + (w - 2 * r);
+    if (tr) { retval += "a" + r + "," + r + " 0 0 1 " + r + "," + r; }
+    else { retval += "h" + r; retval += "v" + r; }
+    retval += "v" + (h - 2 * r);
+    if (br) { retval += "a" + r + "," + r + " 0 0 1 " + -r + "," + r; }
+    else { retval += "v" + r; retval += "h" + -r; }
+    retval += "h" + (2 * r - w);
+    if (bl) { retval += "a" + r + "," + r + " 0 0 1 " + -r + "," + -r; }
+    else { retval += "h" + -r; retval += "v" + -r; }
+    retval += "v" + (2 * r - h);
+    if (tl) { retval += "a" + r + "," + r + " 0 0 1 " + r + "," + -r; }
+    else { retval += "v" + -r; retval += "h" + r; }
+    retval += "z";
+    return retval;
 }

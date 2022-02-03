@@ -1,22 +1,27 @@
 @use '../colours';
 
 
-.bar.positive {
-    fill: steelblue;
-  }
-  
-  .bar.negative {
-    fill: brown;
-  }
-  
-  .axis text {
-    font: 10px sans-serif;
-  }
-  
-  .axis path,
-  .axis line {
+// .bar.positive {
+//     stroke: green;
+// }
+
+// .bar.negative {
+//     stroke: red;
+// }
+
+// .axis text {
+//     font: 10px sans-serif;
+// }
+
+.axis path,
+.axis line {
     fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-  
+    stroke: colours.$gridline;
+    stroke-width: 3px;
+}
+
+.axisText{
+    font-family: 'Baloo Thambi 2', sans-serif;
+    font-size: 140%;
+    color: white;
+}
