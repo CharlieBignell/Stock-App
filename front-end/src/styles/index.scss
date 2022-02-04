@@ -21,3 +21,20 @@ body {
     border: 1px solid black;
     width: max-content;
 }
+
+.tooltip{
+    background-color: rgba(1, 1, 1, 0.3);
+    position: absolute;
+    opacity: 0;
+    top: -14px;
+    left: 0;
+    padding: 0.6em 1em;
+    text-align: center;
+    line-height: 1.4em;
+    font-size: 0.9em;
+    border: 2px solid rgb(161, 161, 161);
+    border-radius: 10px;
+    pointer-events: none;
+    box-shadow: 0 0 8px 3px rgb(37, 37, 37);
+    transition: 0.1s;
+}

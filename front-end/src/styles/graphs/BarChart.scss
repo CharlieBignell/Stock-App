@@ -13,3 +13,25 @@
     color: colours.$axisText;
     font-weight: 500;
 }
+
+.bar{
+    stroke-width: 2px;
+    cursor: crosshair;
+}
+
+#tooltip_barChart{
+    width: 100px;
+}
+
+#tooltip_barChart_name{
+    margin: 3px;
+    font-size: 150%;
+    color: white;
+    font-weight: 500;
+}
+
+#tooltip_barChart_return{
+    margin: 3px;
+    font-size: 130%;
+    color: white;
+}

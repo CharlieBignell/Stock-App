@@ -17,7 +17,9 @@ class BarChart extends Component {
     render() {
         return <div id={this.props.id}>
             <div id="loading_barChart"></div>
-            <div className="tooltip_barChart">
+            <div id="tooltip_barChart" className="tooltip">
+                <p id="tooltip_barChart_name"></p>
+                <p id="tooltip_barChart_return"></p>
             </div>
         </div>
     }
@@ -120,9 +122,10 @@ function barChart(data, id, colours, dateRange = "a") {
             .data(bars)
             .enter()
             .append("path")
-            .attr("class", d => d.val < 0 ? "bar negative" : "bar positive")
+            .attr("class", "bar")
             .attr("fill", d => d.colour)
-            .attr("stroke-width", "2px")
+            .on('mousemove', function (event, d) { onMouseMove(event, d) })
+            .on("mouseout", function () { onMouseLeave() })
             .attr("stroke", "white")
             .attr("d", function (d) {
                 let bx = x(d.displayName)
@@ -135,8 +138,31 @@ function barChart(data, id, colours, dateRange = "a") {
                 let bl = d.val > 0 ? false : true
                 let br = d.val > 0 ? false : true
                 return roundedRect(bx, by, bw, bh, r, tl, tr, bl, br)
-            }
-            )
+            })
+
+        let tooltip = d3.select(`#tooltip_barChart`)
+
+        function onMouseMove(event, d) {
+            tooltip
+                .style("opacity", "1")
+                .style("transform",
+                    `translate(
+                    calc(-50% + ${event.x}px),
+                    calc(-110% + ${event.y}px))`)
+
+            tooltip
+                .select("#tooltip_barChart_name")
+                .text(d.displayName)
+            
+            tooltip
+                .select("#tooltip_barChart_return")
+                .text(d.val + "%")
+
+        }
+
+        function onMouseLeave() {
+            tooltip.style("opacity", "0")
+        }
 
 
 

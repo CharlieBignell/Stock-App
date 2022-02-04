@@ -37,31 +37,19 @@
 
 .listeningRect_lineGraph {
     fill: transparent;
-    cursor: crosshair;
+    cursor: none;
 }
 
-.toolTip_lineGraph {
+.tooltip_line {
     stroke: colours.$gridline;
     stroke-width: 2px;
     width: .5px;
+    opacity: 0;
 }
 
 
-.tooltip_lineGraph {
-    opacity: 0;
-    background-color: rgba(1, 1, 1, 0.3);
-    position: absolute;
-    top: -14px;
-    left: 0;
-    padding: 0.6em 1em;
-    text-align: center;
-    line-height: 1.4em;
-    font-size: 0.9em;
-    border: 2px solid rgb(161, 161, 161);
-    border-radius: 10px;
-    pointer-events: none;
+#tooltip_lineGraph {
     width: 140px;
-    box-shadow: 0 0 8px 3px rgb(37, 37, 37);
 }
 
 .tooltip_date {

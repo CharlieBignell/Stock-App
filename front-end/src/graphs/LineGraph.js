@@ -17,7 +17,7 @@ class LineGraph extends Component {
     render() {
         return <div id={this.props.id}>
             <div id="loading_lineGraph"></div>
-            <div className="tooltip_lineGraph">
+            <div className="tooltip" id="tooltip_lineGraph">
                 <div className="tooltip_date">
                     <span id="date"></span>
                 </div>
@@ -155,8 +155,10 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
         const tooltipLine = bounds
             .append("g")
             .append("rect")
-            .attr("class", "toolTip_lineGraph")
+            .attr("class", "tooltip_line")
             .attr("height", height)
+
+        const tooltip = d3.select("#tooltip_lineGraph")
 
         // Draw each line
         lines.forEach(function (l, i) {
@@ -215,15 +217,15 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
             })
 
             // Format the tooltip 
-            d3.select(".tooltip_lineGraph")
+            tooltip
                 .select("#date")
                 .text(dateParser_tooltip(closestXValue))
 
-            d3.select(".tooltip_lineGraph")
+            tooltip
                 .style("transform",
                     `translate(
                     calc( -35% + ${xScale(closestXValue) + margin.left}px),
-                    calc(-100% + ${event.clientY}px))`)
+                    calc(-40% + ${event.clientY}px))`)
                 .style("opacity", 1)
 
 
@@ -241,7 +243,7 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
             })
 
             // Remove the tooltip and line
-            d3.select(".tooltip_lineGraph").style("opacity", 0)
+            tooltip.style("opacity", 0)
             tooltipLine.style("opacity", 0)
 
         }
