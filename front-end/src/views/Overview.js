@@ -33,14 +33,14 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
-                    {/* <LineGraph 
+                    <LineGraph 
                         data={this.state.data} 
                         id="lineGraph" 
                         movingAvgWin={200} 
                         lines={["value", "amount_ITM", "amount_return_cum"]} 
                         colours={[blue, green, red]}
                         dateRange={this.state.dateRange}
-                    /> */}
+                    />
                     <BarChart
                         data = {this.state.data}
                         id = "barChart"

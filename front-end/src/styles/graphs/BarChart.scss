@@ -1,27 +1,15 @@
 @use '../colours';
 
-
-// .bar.positive {
-//     stroke: green;
-// }
-
-// .bar.negative {
-//     stroke: red;
-// }
-
-// .axis text {
-//     font: 10px sans-serif;
-// }
-
-.axis path,
 .axis line {
     fill: none;
-    stroke: colours.$gridline;
-    stroke-width: 3px;
+    stroke-width: 2px;
+    stroke: white;
+
 }
 
 .axisText{
     font-family: 'Baloo Thambi 2', sans-serif;
-    font-size: 140%;
-    color: white;
+    font-size: 185%;
+    color: colours.$axisText;
+    font-weight: 500;
 }

@@ -42,12 +42,18 @@ function barChart(data, id, colours, dateRange = "a") {
         // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data)[1]
 
-        // TODO: add value
-        // Add FTSE if needed: { name: "ftse", displayName: "FTSE 100" }
-        let bars = [{ name: "spy", displayName: "SPY" }, { name: "nasdaq", displayName: "NASDAQ" }, { name: "dow", displayName: "Dow" }, { name: "russell", displayName: "Russell 2k" }]
+        // TODO: add value - MWRR or TWRR
+        let bars = [
+            { name: "spy", displayName: "SPY" },
+            { name: "nasdaq", displayName: "NASDAQ" },
+            { name: "dow", displayName: "Dow" },
+            { name: "russell", displayName: "Russell 2k" }
+            // { name: "ftse", displayName: "FTSE 100" }
+        ]
+
+        // Get return and calculate the max and min val using each bar
         let maxVal = 0
         let minVal = 0
-
         bars.forEach(function (b, i) {
             b.val = getReturns(dataset, b.name, dateRange)
             b.colour = colours[i]
@@ -56,43 +62,58 @@ function barChart(data, id, colours, dateRange = "a") {
         })
 
         let margin = { top: 50, right: 50, bottom: 50, left: 60 }
-        let width = 400 - margin.left - margin.right
+        let width = 460 - margin.left - margin.right
         let height = 400 - margin.top - margin.bottom
 
-        // append the svg object to the body of the page
-        var svg = d3.select(`#${id}`)
+        // Append the chart area
+        let svg = d3.select(`#${id}`)
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
-            .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
         // X axis
-        var x = d3.scaleBand()
+        let x = d3.scaleBand()
             .range([0, width])
             .domain(bars.map(d => d.displayName))
-            .padding(0.4)
+            .padding(0.5)
+
+        let xAxis = d3.axisBottom(x)
+            .tickSizeInner(0)
+            .tickSizeOuter(0)
+            .tickPadding(12)
 
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x))
+            .call(xAxis)
             .selectAll("text")
-            // .attr("transform", "translate(-10,0)rotate(-45)")
-            // .style("text-anchor", "end");
             .attr("class", "axisText")
 
-        // Add Y axis
-        var y = d3.scaleLinear()
+        // Y axis
+        let y = d3.scaleLinear()
             .domain([(minVal), maxVal])
             .range([height, 0])
 
-
-        var yAxis = d3.axisLeft(y).ticks(6)
+        let yAxis = d3.axisLeft(y)
+            .ticks(6)
+            .tickSize(-width, 0, 0)
+            .tickFormat((x) => `${x}%`)
+            .tickPadding(12)
 
         svg.append("g")
-            .attr("class", "x axis")
-            .call(yAxis);
+            .call(yAxis)
+            .selectAll("text")
+            .attr("class", "axisText")
+            .attr("color", "#454B53")
+
+        svg.append("g")
+            .attr("class", "axis")
+            .append("line")
+            .attr("y1", y(0))
+            .attr("y2", y(0))
+            .attr("x1", 0)
+            .attr("x2", width);
 
         // Bars
         svg.selectAll(".bar")
@@ -108,7 +129,7 @@ function barChart(data, id, colours, dateRange = "a") {
                 let by = y(Math.max(0, d.val))
                 let bw = x.bandwidth()
                 let bh = Math.abs(y(d.val) - y(0))
-                let r = 9
+                let r = 8
                 let tl = d.val > 0 ? true : false
                 let tr = d.val > 0 ? true : false
                 let bl = d.val > 0 ? false : true
@@ -116,21 +137,9 @@ function barChart(data, id, colours, dateRange = "a") {
                 return roundedRect(bx, by, bw, bh, r, tl, tr, bl, br)
             }
             )
-        // .attr("x", function (d) { return x(d.displayName); })
-        // .attr("y", function (d) { return y(Math.max(0, d.val)); })
-        // .attr("width", x.bandwidth())
-        // .attr("height", function (d) {
-        // return Math.abs(y(d.val) - y(0));
-        // })
 
 
-        svg.append("g")
-            .attr("class", "y axis")
-            .append("line")
-            .attr("y1", y(0))
-            .attr("y2", y(0))
-            .attr("x1", 0)
-            .attr("x2", width);
+
 
     }
 }

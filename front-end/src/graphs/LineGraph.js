@@ -54,18 +54,11 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
         dataset = getMovingAvgs(dataset, lines, movingAvgWin)
 
         // Initialise dimensions
-        const dimensions = {
-            width: 1100,
-            height: 600,
-            margin: {
-                top: 50,
-                right: 50,
-                bottom: 50,
-                left: 90,
-            },
-        }
-        dimensions.boundedWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
-        dimensions.boundedHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
+
+        const margin = { top: 50, right: 50, bottom: 50, left: 90,}
+        
+        const width = 1100 - margin.left - margin.right
+        const height = 600 - margin.top - margin.bottom
 
         // Date parsers - one for the axis and one for the tooltip
         let dateParser_axis = d3.timeParse("%Y-%m-%d")
@@ -75,38 +68,33 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
         let dateFormat_axis = d3.timeFormat("%Y")
 
         switch (dateRange) {
-            // For year, show the month and year
             case "y":
                 dateFormat_axis = d3.timeFormat("%b")
                 break;
-            // For month, show the month(num) and day
             case "m":
                 dateFormat_axis = d3.timeFormat("%b %d")
                 break;
-            // For week, show the month(abbr) and day
             case "w":
-                // dateFormat_axis = d3.timeFormat("%b %d")
                 break;
         }
 
         // Add the svg element to the container
         const svg = d3.select(`#${id}`)
             .append("svg")
-            .attr("width", dimensions.width)
-            .attr("height", dimensions.height)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
 
 
         // Add an element to act as the bounds of the graph area
         const bounds = svg.append("g")
-            .style("transform", `translate(${dimensions.margin.left}px,${dimensions.margin.top}px)`)
+            .style("transform", `translate(${margin.left}px,${margin.top}px)`)
 
         // Add a transparent rectangle to act as a listening area for the tooltip
         svg.append("rect")
-            .style("transform", `translate(${dimensions.margin.left}px,${dimensions.margin.top}px)`)
-            .attr("fill", "transparent")
-            .attr("width", dimensions.boundedWidth)
-            .attr("height", dimensions.boundedHeight)
-            .attr("cursor", "crosshair")
+            .style("transform", `translate(${margin.left}px,${margin.top}px)`)
+            .attr("class", "listeningRect_lineGraph")
+            .attr("width", width)
+            .attr("height", height)
             .on('mousemove', function (event) { onMouseMove(event) })
             .on("mouseout", function () { onMouseLeave() })
 
@@ -133,28 +121,23 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
         const yScale = d3
             .scaleLinear()
             .domain([min_all, max_all])
-            .range([dimensions.boundedHeight, 0])
+            .range([height, 0])
 
         const yAxisGenerator = d3.axisLeft()
             .scale(yScale)
             .ticks(7)
-            .tickSize(-dimensions.boundedWidth, 0, 0)
+            .tickSize(-width, 0, 0)
             .tickFormat((x) => formatValue(x))
             .tickPadding(10)
 
         bounds.append("g")
             .call(yAxisGenerator)
-            .attr("color", "#676C72")
-            .attr("font-size", "110%")
-            .attr("font-family", "Baloo Thambi 2")
-            .attr("font-weight", "500")
-            .attr("margin-right", 30)
-
+            .attr("class", "axis_lineGraph")
 
         // X-axis
         const xScale = d3.scaleTime()
             .domain(d3.extent(dataset, xAccessor))
-            .range([0, dimensions.boundedWidth])
+            .range([0, width])
 
         const xAxisGenerator = d3.axisBottom()
             .scale(xScale)
@@ -164,21 +147,16 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
 
         bounds.append("g")
             .call(xAxisGenerator.tickFormat(dateFormat_axis))
-            .style("transform", `translateY(${dimensions.boundedHeight}px)`)
-            .attr("color", "#676C72")
-            .attr("font-size", "110%")
-            .attr("font-family", "Baloo Thambi 2")
-            .attr("font-weight", "500")
+            .style("transform", `translateY(${height}px)`)
+            .attr("class", "axis_lineGraph")
 
 
         // The x-intercept line to folow the tooltip
         const tooltipLine = bounds
             .append("g")
             .append("rect")
-            .attr("class", "dotted")
-            .attr("stroke-width", "1px")
-            .attr("width", ".5px")
-            .attr("height", dimensions.boundedHeight)
+            .attr("class", "toolTip_lineGraph")
+            .attr("height", height)
 
         // Draw each line
         lines.forEach(function (l, i) {
@@ -197,22 +175,17 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
             bounds
                 .append("path")
                 .attr("d", lineGenerator(dataset))
-                .attr("fill", "none")
+                .attr("class", "line_lineGraph")
                 .attr("stroke", colours[i])
-                .attr("stroke-width", 3)
 
             // Append the tooltip marker
             bounds
                 .append("circle")
-                .attr("class", "tooltip-circle")
+                .attr("class", "tooltip_marker_lineGraph")
                 .attr("id", `${l}_circ`)
-                .attr("r", 5)
-                .attr("stroke", "white")
                 .attr("fill", colours[i])
-                .attr("stroke-width", 3)
-                .style("opacity", 0)
-
-
+                .attr("r", 5)
+        
         })
 
         function onMouseMove(event) {
@@ -233,7 +206,6 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
 
                 d3.select(`#${lines[i]}_val`)
                     .html(formatValue(closestYValue))
-                    .attr("color", "black")
 
                 // Update the position of the tooltip marker
                 d3.select(`#${lines[i]}_circ`)
@@ -243,12 +215,14 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
             })
 
             // Format the tooltip 
-            d3.select(".tooltip_lineGraph").select("#date").text(dateParser_tooltip(closestXValue))
+            d3.select(".tooltip_lineGraph")
+                .select("#date")
+                .text(dateParser_tooltip(closestXValue))
 
             d3.select(".tooltip_lineGraph")
                 .style("transform",
                     `translate(
-                    calc( -35% + ${xScale(closestXValue) + dimensions.margin.left}px),
+                    calc( -35% + ${xScale(closestXValue) + margin.left}px),
                     calc(-100% + ${event.clientY}px))`)
                 .style("opacity", 1)
 

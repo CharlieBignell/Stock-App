@@ -1,18 +1,51 @@
 @use '../colours';
 
+
+// Graph elements
 .domain {
     stroke: none;
 }
 
-.tick > line {
+.tick>line {
     stroke: colours.$gridline !important;
-    stroke-width: 2.5px;
+    stroke-width: 1.5px;
 }
 
-.dotted {
+.axis_lineGraph {
+    color: colours.$axisText;
+    font-size: 120%;
+    font-family: "Baloo Thambi 2";
+    font-weight: 500;
+    margin-right: 3px;
+}
+
+.tooltip_marker_lineGraph {
+    stroke-width: 3;
+    opacity: 0;
+    stroke: white;
+}
+
+.line_lineGraph {
+    stroke-width: 3;
+    fill: none;
+}
+
+// Tooltip stuff
+#date {
+    color: white;
+}
+
+.listeningRect_lineGraph {
+    fill: transparent;
+    cursor: crosshair;
+}
+
+.toolTip_lineGraph {
     stroke: colours.$gridline;
     stroke-width: 2px;
+    width: .5px;
 }
+
 
 .tooltip_lineGraph {
     opacity: 0;
@@ -38,45 +71,46 @@
     line-height: 1.4em;
 }
 
-.tooltip_items{
+.tooltip_items {
     text-align: left;
     display: flex;
     flex-flow: column nowrap;
 }
 
-.tooltip_item > p{
+.tooltip_item>p {
     margin: 0;
 }
 
-#amount_ITM_name{
+#amount_ITM_name {
     color: colours.$green;
 }
 
-#value_name{
+#value_name {
     color: colours.$blue;
-
 }
 
-#amount_return_cum_name{
+#amount_return_cum_name {
     color: colours.$red;
 }
 
 
-#amount_ITM_val, #value_val, #amount_return_cum_val{
+#amount_ITM_val,
+#value_val,
+#amount_return_cum_val {
     color: white;
     font-weight: 500;
 }
 
-.tooltip_item{
+.tooltip_item {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
 }
 
-.tooltip_item > *{
-   margin: 0; 
+.tooltip_item>* {
+    margin: 0;
 }
 
-hr{
+hr {
     margin: 2px 0 2px 0;
 }
