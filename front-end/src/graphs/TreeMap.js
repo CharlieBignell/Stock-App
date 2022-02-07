@@ -100,7 +100,7 @@ function treeMap(data, id, colourScale, dateRange = "a") {
         }
         var scale = d3.scaleThreshold()
             .range(colourScale)
-            .domain(colourDomain);
+            .domain(colourDomain)
 
         // use this information to add rectangles:
         svg
@@ -112,13 +112,7 @@ function treeMap(data, id, colourScale, dateRange = "a") {
             .attr('width', (d) => d.x1 - d.x0)
             .attr('height', (d) => d.y1 - d.y0)
             .attr("class", "treeMap_rect")
-            // .attr("fill", (d) => scale(d.data.return))
-            .attr("fill", function(d){
-                console.log(d.data.ticker + " - " + d.data.return)
-                // console.log(d.data.return)
-                // console.log("--")
-                return scale(d.data.return)
-            })
+            .attr("fill", (d) => scale(d.data.return))
 
 
         // and to add the text labels
