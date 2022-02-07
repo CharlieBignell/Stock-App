@@ -7,11 +7,11 @@ import '../styles/graphs/TreeMap.scss';
 
 class TreeMap extends Component {
     componentDidMount() {
-        treeMap(this.props.data, this.props.id, this.props.dateRange)
+        treeMap(this.props.data, this.props.id, this.props.colourScale, this.props.dateRange)
     }
 
     componentDidUpdate() {
-        treeMap(this.props.data, this.props.id, this.props.dateRange)
+        treeMap(this.props.data, this.props.id, this.props.colourScale, this.props.dateRange)
     }
 
     render() {
@@ -25,10 +25,10 @@ class TreeMap extends Component {
     }
 }
 
-function treeMap(data, id, dateRange = "a") {
+function treeMap(data, id, colourScale, dateRange = "a") {
 
     // Add loading text
-    let container_loading = document.getElementById("loading_barChart")
+    let container_loading = document.getElementById("loading_treeMap")
     let text = document.createElement('p')
     text.innerHTML = "Loading..."
     container_loading.appendChild(text)
@@ -42,7 +42,7 @@ function treeMap(data, id, dateRange = "a") {
         }
 
         // Extract the right dataset and generate the rquired moving avg lines
-        let dataset = JSON.parse(data)[2]
+        let dataset = JSON.parse(data).treeMap
 
         var margin = { top: 10, right: 10, bottom: 10, left: 10 },
             width = 1100 - margin.left - margin.right,
@@ -60,17 +60,13 @@ function treeMap(data, id, dateRange = "a") {
         data = []
 
         dataset.forEach((d) => {
-            if (d.date === "2022-02-03") {
+            if (d.dateRange == dateRange) {
                 d.parent = "parent"
                 data.push(d)
             }
-            if (d.ticker === "GOOG") {
-                d.value = 5000
-            }
-
         });
 
-        data.sort((a, b) => (parseFloat(a.value) < parseFloat(b.value)) ? 1 : -1)
+        data.sort((a, b) => (parseFloat(a.share) < parseFloat(b.share)) ? 1 : -1)
 
         data.push({
             parent: "",
@@ -82,12 +78,29 @@ function treeMap(data, id, dateRange = "a") {
             .parentId((d) => d.parent)
             (data)
 
-        root.sum((d) => +d.value)
+        root.sum((d) => +d.share)
 
         d3.treemap()
             .size([width, height])
             // .padding(0)
             (root)
+        console.log(colourScale)
+
+        let colourDomain = [90, 95, 100, 105, 100]
+
+        switch(dateRange){
+            case "y":
+            case "a":
+                break;
+            case "m":
+                colourDomain = [95, 97.5, 100, 102.5, 105]
+            case "w":
+                colourDomain = [98, 99, 100, 101, 102]
+
+        }
+        var scale = d3.scaleThreshold()
+            .range(colourScale)
+            .domain(colourDomain);
 
         // use this information to add rectangles:
         svg
@@ -99,7 +112,14 @@ function treeMap(data, id, dateRange = "a") {
             .attr('width', (d) => d.x1 - d.x0)
             .attr('height', (d) => d.y1 - d.y0)
             .attr("class", "treeMap_rect")
-            .attr("fill", (d) => "grey")
+            // .attr("fill", (d) => scale(d.data.return))
+            .attr("fill", function(d){
+                console.log(d.data.ticker + " - " + d.data.return)
+                // console.log(d.data.return)
+                // console.log("--")
+                return scale(d.data.return)
+            })
+
 
         // and to add the text labels
         svg
@@ -109,7 +129,7 @@ function treeMap(data, id, dateRange = "a") {
             .attr("x", (d) => d.x0 + 10)
             .attr("y", (d) => d.y0 + 20)
             .text(function (d) {
-                return (16*d.data.ticker.length) <= (d.x1 - d.x0) ? d.data.ticker : "..."
+                return (16 * d.data.ticker.length) <= (d.x1 - d.x0) ? d.data.ticker : "..."
             })
             .attr("class", "treeMap_text")
     }

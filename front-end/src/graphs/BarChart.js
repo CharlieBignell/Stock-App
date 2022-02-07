@@ -63,7 +63,7 @@ function barChart(data, id, colours, dateRange = "a") {
             minVal = Math.min(b.val, minVal)
         })
 
-        let margin = { top: 50, right: 50, bottom: 50, left: 60 }
+        let margin = { top: 50, right: 50, bottom: 50, left: 80 }
         let width = 460 - margin.left - margin.right
         let height = 400 - margin.top - margin.bottom
 

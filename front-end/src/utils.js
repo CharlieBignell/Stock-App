@@ -7,6 +7,8 @@ export let yellow = "#f0ec79"
 export let purple = "#bd63eb"
 export let orange = "#c99b46"
 
+export let colourScale = ["#e78380", "#fec37d", "#eee6e6", "#fbfe9c", "#72ca76"]
+
 // Change the active nav item
 export function formatNav(target) {
     let items = document.querySelectorAll('.item')

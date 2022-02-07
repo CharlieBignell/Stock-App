@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import '../styles/views/Overview.scss';
-import { formatNav, red, green, blue, yellow, orange, purple } from '../utils.js';
+import { formatNav, red, green, blue, yellow, orange, purple, colourScale } from '../utils.js';
 
 import Header from "../components/Header";
 import LineGraph from "../graphs/LineGraph";
@@ -13,7 +13,7 @@ class Overview extends Component {
         super(props);
         this.state = {
             data: "NULL",
-            dateRange: "y"
+            dateRange: "w"
         };
 
     }
@@ -37,9 +37,10 @@ class Overview extends Component {
                     <TreeMap
                         data={this.state.data}
                         id="treeMap"
+                        colourScale = {colourScale}
                         dateRange={this.state.dateRange}
                     />
-                    <LineGraph
+                    {/* <LineGraph
                         data={this.state.data}
                         id="lineGraph"
                         movingAvgWin={200}
@@ -52,7 +53,7 @@ class Overview extends Component {
                         id="barChart"
                         colours={[blue, green, red, yellow, purple, orange]}
                         dateRange={this.state.dateRange}
-                    />
+                    /> */}
 
                 </div>
 
