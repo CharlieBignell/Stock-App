@@ -38,8 +38,8 @@ def getShares(df, ticker, date):
 
 
 # Get the shares held on a given day
-def getDayPortfolio(df_buys, df_sells, day = pd.to_datetime("today") - timedelta(days=1)):
-
+def getDayPortfolio(df_buys, df_sells, day = pd.to_datetime("today") - timedelta(days=1), splits = []):
+    
     # Get the buys and sells for each day before the given date
     df_buysInRange = df_buys.loc[df_buys["date"] <= day, ["date", "ticker", "shareCount"]]
     df_sellsInRange = df_sells.loc[df_sells["date"] <= day, ["date", "ticker", "shareCount"]]
@@ -48,6 +48,14 @@ def getDayPortfolio(df_buys, df_sells, day = pd.to_datetime("today") - timedelta
     df_emptySells = df_buysInRange.copy()
     df_emptySells["shareCount"] = 0
     df_sellsInRange = pd.concat([df_sellsInRange, df_emptySells])
+
+    # Adjust for stock splits
+    if len(splits) > 0:
+        df_buysInRange = pd.merge(df_buysInRange, splits, how="left", left_on=["date", "ticker"], right_on=["date", "ticker"])
+        df_buysInRange["shareCount"] = df_buysInRange["shareCount"] * df_buysInRange["split"]
+
+        df_sellsInRange = pd.merge(df_sellsInRange, splits, how="left", left_on=["date", "ticker"], right_on=["date", "ticker"])
+        df_sellsInRange["shareCount"] = df_sellsInRange["shareCount"] * df_sellsInRange["split"]
 
     # Aggregate to get total shares in and out
     sharesIn = df_buysInRange.groupby('ticker').agg({'shareCount': 'sum'})['shareCount'].reset_index()
