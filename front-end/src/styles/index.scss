@@ -12,12 +12,20 @@ body {
     margin: 20px;
 }
 
+#lineGraph, #barChart, #treeMap{
+    margin: 20px 0;
+}
+
 #lineGraph{
     border: 1px solid black;
     width: max-content;
 }
 
 #barChart{
+    border: 1px solid black;
+    width: max-content;
+}
+#treeMap{
     border: 1px solid black;
     width: max-content;
 }

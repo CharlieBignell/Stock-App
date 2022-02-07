@@ -58,7 +58,7 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
         const margin = { top: 50, right: 50, bottom: 50, left: 90,}
         
         const width = 1100 - margin.left - margin.right
-        const height = 600 - margin.top - margin.bottom
+        const height = 550 - margin.top - margin.bottom
 
         // Date parsers - one for the axis and one for the tooltip
         let dateParser_axis = d3.timeParse("%Y-%m-%d")

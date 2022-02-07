@@ -7,16 +7,16 @@ import '../styles/graphs/TreeMap.scss';
 
 class TreeMap extends Component {
     componentDidMount() {
-        treeMap(this.props.data, this.props.id, this.props.colours, this.props.dateRange)
+        treeMap(this.props.data, this.props.id, this.props.dateRange)
     }
 
     componentDidUpdate() {
-        treeMap(this.props.data, this.props.id, this.props.colours, this.props.dateRange)
+        treeMap(this.props.data, this.props.id, this.props.dateRange)
     }
 
     render() {
         return <div id={this.props.id}>
-            <div id="loading_barChart"></div>
+            <div id="loading_treeMap"></div>
             <div id="tooltip_treeMap" className="tooltip">
                 {/* <p id="tooltip_"></p>
                 <p id="tooltip_"></p> */}
@@ -25,7 +25,7 @@ class TreeMap extends Component {
     }
 }
 
-function treeMap(data, id, colours, dateRange = "a") {
+function treeMap(data, id, dateRange = "a") {
 
     // Add loading text
     let container_loading = document.getElementById("loading_barChart")
@@ -45,8 +45,8 @@ function treeMap(data, id, colours, dateRange = "a") {
         let dataset = JSON.parse(data)[2]
 
         var margin = { top: 10, right: 10, bottom: 10, left: 10 },
-            width = 600 - margin.left - margin.right,
-            height = 445 - margin.top - margin.bottom;
+            width = 1100 - margin.left - margin.right,
+            height = 360 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
         var svg = d3.select(`#${id}`)
@@ -59,36 +59,34 @@ function treeMap(data, id, colours, dateRange = "a") {
 
         data = []
 
-        dataset.forEach(d => {
-            if(d.date == "2022-02-03"){
+        dataset.forEach((d) => {
+            if (d.date === "2022-02-03") {
                 d.parent = "parent"
                 data.push(d)
             }
-            if(d.ticker == "GOOG"){
+            if (d.ticker === "GOOG") {
                 d.value = 5000
             }
+
         });
 
         data.sort((a, b) => (parseFloat(a.value) < parseFloat(b.value)) ? 1 : -1)
 
         data.push({
             parent: "",
-            ticker:  "parent"
+            ticker: "parent"
         })
-        
-        console.log(data)
-        // stratify the data: reformatting for d3.js
-        const root = d3.stratify()
-            .id(function (d) { return d.ticker; })   // Name of the entity (column name is name in csv)
-            .parentId(function (d) { return d.parent; })   // Name of the parent (column name is parent in csv)
-            (data);
-        root.sum(function (d) { return +d.value })   // Compute the numeric value for each entity
 
-        // Then d3.treemap computes the position of each element of the hierarchy
-        // The coordinates are added to the root object above
+        const root = d3.stratify()
+            .id((d) => d.ticker)
+            .parentId((d) => d.parent)
+            (data)
+
+        root.sum((d) => +d.value)
+
         d3.treemap()
             .size([width, height])
-            .padding(4)
+            // .padding(0)
             (root)
 
         // use this information to add rectangles:
@@ -96,25 +94,24 @@ function treeMap(data, id, colours, dateRange = "a") {
             .selectAll("rect")
             .data(root.leaves())
             .join("rect")
-            .attr('x', function (d) { return d.x0; })
-            .attr('y', function (d) { return d.y0; })
-            .attr('width', function (d) { return d.x1 - d.x0; })
-            .attr('height', function (d) { return d.y1 - d.y0; })
-            .style("stroke", "black")
-            .style("fill", "#69b3a2");
+            .attr('x', (d) => d.x0)
+            .attr('y', (d) => d.y0)
+            .attr('width', (d) => d.x1 - d.x0)
+            .attr('height', (d) => d.y1 - d.y0)
+            .attr("class", "treeMap_rect")
+            .attr("fill", (d) => "grey")
 
         // and to add the text labels
         svg
             .selectAll("text")
             .data(root.leaves())
             .join("text")
-            .attr("x", function (d) { return d.x0 + 10 })    // +10 to adjust position (more right)
-            .attr("y", function (d) { return d.y0 + 20 })    // +20 to adjust position (lower)
-            .text(function (d) { return d.data.ticker })
-            .attr("font-size", "15px")
-            .attr("fill", "white")
-
-
+            .attr("x", (d) => d.x0 + 10)
+            .attr("y", (d) => d.y0 + 20)
+            .text(function (d) {
+                return (16*d.data.ticker.length) <= (d.x1 - d.x0) ? d.data.ticker : "..."
+            })
+            .attr("class", "treeMap_text")
     }
 }
 

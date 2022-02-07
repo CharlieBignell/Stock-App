@@ -1,1 +1,14 @@
 @use '../colours';
+
+.treeMap_rect{
+    stroke: white;
+    stroke-width: 2px;
+}
+
+.treeMap_text{
+    font-size: 1.1em;
+    fill: white;
+    font-family: 'Baloo Thambi 2', sans-serif;
+    font-weight: 500;
+    cursor: default;
+}

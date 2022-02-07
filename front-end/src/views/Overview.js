@@ -37,7 +37,6 @@ class Overview extends Component {
                     <TreeMap
                         data={this.state.data}
                         id="treeMap"
-                        colours={[blue, green, red, yellow, purple, orange]}
                         dateRange={this.state.dateRange}
                     />
                     <LineGraph
