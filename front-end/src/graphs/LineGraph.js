@@ -49,7 +49,8 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
         }
 
         // Extract the right dataset and generate the rquired moving avg lines
-        let dataset = JSON.parse(data)[1]
+        let dataset = JSON.parse(data).lineGraph
+
         dataset = setRange(dataset, dateRange)
         dataset = getMovingAvgs(dataset, lines, movingAvgWin)
 

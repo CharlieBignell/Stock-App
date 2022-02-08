@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getReturns, roundedRect } from '../utils.js';
+import { getReturns, roundedRect, colours } from '../utils.js';
 
 import * as d3 from 'd3'
 
@@ -7,11 +7,11 @@ import '../styles/graphs/BarChart.scss';
 
 class BarChart extends Component {
     componentDidMount() {
-        barChart(this.props.data, this.props.id, this.props.colours, this.props.dateRange)
+        barChart(this.props.data, this.props.id, this.props.dateRange)
     }
 
     componentDidUpdate() {
-        barChart(this.props.data, this.props.id, this.props.colours, this.props.dateRange)
+        barChart(this.props.data, this.props.id, this.props.dateRange)
     }
 
     render() {
@@ -25,7 +25,7 @@ class BarChart extends Component {
     }
 }
 
-function barChart(data, id, colours, dateRange = "a") {
+function barChart(data, id, dateRange = "a") {
 
     // Add loading text
     let container_loading = document.getElementById("loading_barChart")
@@ -42,7 +42,7 @@ function barChart(data, id, colours, dateRange = "a") {
         }
 
         // Extract the right dataset and generate the rquired moving avg lines
-        let dataset = JSON.parse(data)[1]
+        let dataset = JSON.parse(data).barChart
 
         // TODO: add value - MWRR or TWRR
         let bars = [
@@ -163,9 +163,6 @@ function barChart(data, id, colours, dateRange = "a") {
         function onMouseLeave() {
             tooltip.style("opacity", "0")
         }
-
-
-
 
     }
 }

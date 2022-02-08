@@ -31,7 +31,9 @@ router.get('/', function (req, res, next) {
                             
                             res.send(
                                 {
-                                    treeMap: getData_treeMap()
+                                    lineGraph: getData_lineGraph(),
+                                    treeMap: getData_treeMap(),
+                                    barChart: getData_barChart()
                                 }
                             )
                         });
@@ -70,13 +72,13 @@ function setRange(data, range) {
     return result
 }
 
-// function getData_barChart(){
-//     return stocks
-// }
+function getData_barChart(){
+    return daily
+}
 
-// function getData_lineGraph(){
-//     return daily
-// }
+function getData_lineGraph(){
+    return daily
+}
 
 function getData_treeMap() {
     let data = daily_stocks

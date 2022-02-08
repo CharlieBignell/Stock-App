@@ -8,6 +8,8 @@ export let purple = "#bd63eb"
 export let orange = "#eda961"
 export let grey = "#bfbfbf"
 
+export let colours = [red, blue, green, yellow, purple, orange]
+
 export let colourScale = ["#c94747", "#ed8585", "#c9c9c9", "#8fde85", "#55bf47"]
 
 export let colourScale_text = ["#611818","#8f3232", "#575757", "#326625", "#254f1a"]
