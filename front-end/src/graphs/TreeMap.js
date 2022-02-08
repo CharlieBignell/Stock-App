@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import {  } from '../utils.js';
+import { colourScale, colourScale_text } from '../utils.js';
 
 import * as d3 from 'd3'
 
@@ -7,25 +7,25 @@ import '../styles/graphs/TreeMap.scss';
 
 class TreeMap extends Component {
     componentDidMount() {
-        treeMap(this.props.data, this.props.id, this.props.colourScale, this.props.dateRange)
+        treeMap(this.props.data, this.props.id, colourScale, colourScale_text, this.props.dateRange)
     }
 
     componentDidUpdate() {
-        treeMap(this.props.data, this.props.id, this.props.colourScale, this.props.dateRange)
+        treeMap(this.props.data, this.props.id, colourScale, colourScale_text, this.props.dateRange)
     }
 
     render() {
         return <div id={this.props.id}>
             <div id="loading_treeMap"></div>
             <div id="tooltip_treeMap" className="tooltip">
-                {/* <p id="tooltip_"></p>
-                <p id="tooltip_"></p> */}
+                <p id="tooltip_treeMap_ticker"></p>
+                <p id="tooltip_treeMap_return"></p>
             </div>
         </div>
     }
 }
 
-function treeMap(data, id, colourScale, dateRange = "a") {
+function treeMap(data, id, colourScale, colourScale_text, dateRange = "a") {
 
     // Add loading text
     let container_loading = document.getElementById("loading_treeMap")
@@ -41,14 +41,12 @@ function treeMap(data, id, colourScale, dateRange = "a") {
             container_loading.removeChild(container_loading.lastChild);
         }
 
-        // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data).treeMap
 
         var margin = { top: 10, right: 10, bottom: 10, left: 10 },
             width = 1100 - margin.left - margin.right,
             height = 360 - margin.top - margin.bottom;
 
-        // append the svg object to the body of the page
         var svg = d3.select(`#${id}`)
             .append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -84,25 +82,29 @@ function treeMap(data, id, colourScale, dateRange = "a") {
             .size([width, height])
             // .padding(0)
             (root)
-        console.log(colourScale)
 
-        let colourDomain = [90, 95, 100, 105, 100]
-
-        switch(dateRange){
+        let colourDomain = [90, 95, 105, 115]
+        switch (dateRange) {
             case "y":
             case "a":
                 break;
             case "m":
-                colourDomain = [95, 97.5, 100, 102.5, 105]
+                colourDomain = [95, 98, 102, 105]
+                break;
             case "w":
-                colourDomain = [98, 99, 100, 101, 102]
-
+                colourDomain = [97, 99.5, 100.5, 103]
+                break;
         }
-        var scale = d3.scaleThreshold()
+
+        var scale_rect = d3.scaleThreshold()
             .range(colourScale)
             .domain(colourDomain)
 
-        // use this information to add rectangles:
+        var scale_text = d3.scaleThreshold()
+            .range(colourScale_text)
+            .domain(colourDomain)
+
+        // Add rectangles
         svg
             .selectAll("rect")
             .data(root.leaves())
@@ -112,10 +114,11 @@ function treeMap(data, id, colourScale, dateRange = "a") {
             .attr('width', (d) => d.x1 - d.x0)
             .attr('height', (d) => d.y1 - d.y0)
             .attr("class", "treeMap_rect")
-            .attr("fill", (d) => scale(d.data.return))
+            .attr("fill", (d) => scale_rect(d.data.return))
+            .on('mousemove', function (event, d) { onMouseMove(event, d) })
+            .on("mouseout", function () { onMouseLeave() })
 
-
-        // and to add the text labels
+        // Add labels
         svg
             .selectAll("text")
             .data(root.leaves())
@@ -126,6 +129,36 @@ function treeMap(data, id, colourScale, dateRange = "a") {
                 return (16 * d.data.ticker.length) <= (d.x1 - d.x0) ? d.data.ticker : "..."
             })
             .attr("class", "treeMap_text")
+            .attr("fill", (d) => scale_text(d.data.return))
+            .on('mousemove', function (event, d) { onMouseMove(event, d) })
+
+
+        let tooltip = d3.select(`#tooltip_treeMap`)
+
+        function onMouseMove(event, d) {
+            tooltip
+                .style("opacity", "1")
+                .style("transform",
+                    `translate(
+                    calc(-50% + ${event.x}px),
+                    calc(-110% + ${event.y}px))`)
+
+            tooltip
+                .select("#tooltip_treeMap_ticker")
+                .text(d.data.ticker + ` - ${d.data.share}%`)
+            
+            let prefix = d.data.return >= 100 ? "+" : ""
+
+            tooltip
+                .select("#tooltip_treeMap_return")
+                .text(prefix + (d.data.return - 100).toFixed(2) + "%")
+
+        }
+
+        function onMouseLeave() {
+            tooltip.style("opacity", "0")
+        }
+
     }
 }
 

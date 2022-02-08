@@ -3,11 +3,14 @@ import moment from 'moment';
 export let red = "#e78380"
 export let blue = "#6bade2"
 export let green = "#72ca76"
-export let yellow = "#f0ec79"
+export let yellow = "#e6e675"
 export let purple = "#bd63eb"
-export let orange = "#c99b46"
+export let orange = "#eda961"
+export let grey = "#bfbfbf"
 
-export let colourScale = ["#e78380", "#fec37d", "#eee6e6", "#fbfe9c", "#72ca76"]
+export let colourScale = ["#c94747", "#ed8585", "#c9c9c9", "#8fde85", "#55bf47"]
+
+export let colourScale_text = ["#611818","#8f3232", "#575757", "#326625", "#254f1a"]
 
 // Change the active nav item
 export function formatNav(target) {

@@ -7,8 +7,24 @@
 
 .treeMap_text{
     font-size: 1.1em;
-    fill: white;
     font-family: 'Baloo Thambi 2', sans-serif;
     font-weight: 500;
     cursor: default;
+}
+
+#tooltip_treeMap{
+    width: 150px;
+}
+
+#tooltip_treeMap_ticker{
+    margin: 3px;
+    font-size: 150%;
+    color: white;
+    font-weight: 500;
+}
+
+#tooltip_treeMap_return{
+    margin: 3px;
+    font-size: 130%;
+    color: white;
 }

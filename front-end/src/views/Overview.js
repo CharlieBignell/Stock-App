@@ -13,7 +13,7 @@ class Overview extends Component {
         super(props);
         this.state = {
             data: "NULL",
-            dateRange: "w"
+            dateRange: "m"
         };
 
     }
@@ -37,7 +37,6 @@ class Overview extends Component {
                     <TreeMap
                         data={this.state.data}
                         id="treeMap"
-                        colourScale = {colourScale}
                         dateRange={this.state.dateRange}
                     />
                     {/* <LineGraph
