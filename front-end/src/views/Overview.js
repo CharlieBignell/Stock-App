@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import LineGraph from "../graphs/LineGraph";
 import BarChart from "../graphs/BarChart";
 import TreeMap from "../graphs/TreeMap";
+import PieChart from "../graphs/PieChart";
 
 class Overview extends Component {
 
@@ -34,6 +35,10 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
+                    <PieChart
+                        data={this.state.data}
+                        id="pieChart"
+                    />
                     {/* <TreeMap
                         data={this.state.data}
                         id="treeMap"
@@ -47,11 +52,11 @@ class Overview extends Component {
                         colours={[blue, green, red]}
                         dateRange={this.state.dateRange}
                     /> */}
-                    <BarChart
+                    {/* <BarChart
                         data={this.state.data}
                         id="barChart"
                         dateRange={this.state.dateRange}
-                    />
+                    /> */}
 
                 </div>
 

@@ -6,9 +6,11 @@ export let green = "#72ca76"
 export let yellow = "#e6e675"
 export let purple = "#bd63eb"
 export let orange = "#eda961"
+export let turquoise = "#59c3d4"
 export let grey = "#bfbfbf"
 
-export let colours = [red, blue, green, yellow, purple, orange]
+export let colours_core = [red, blue, green, yellow, purple, orange]
+export let colours_smooth = [blue, green, yellow, orange, red, blue, purple]
 
 export let colourScale = ["#c94747", "#ed8585", "#c9c9c9", "#8fde85", "#55bf47"]
 

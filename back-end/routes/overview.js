@@ -28,12 +28,13 @@ router.get('/', function (req, res, next) {
                             daily_stocks.push(row)
                         })
                         .on('end', () => {
-                            
+
                             res.send(
                                 {
                                     lineGraph: getData_lineGraph(),
                                     treeMap: getData_treeMap(),
-                                    barChart: getData_barChart()
+                                    barChart: getData_barChart(),
+                                    pieChart: getData_pieChart()
                                 }
                             )
                         });
@@ -72,20 +73,65 @@ function setRange(data, range) {
     return result
 }
 
-function getData_barChart(){
+function getData_pieChart() {
+
+    // Get a list of all sectors and industries
+    const sectors_all = [...new Set(stocks.map(d => d.sector))];
+    const industries_all = [...new Set(stocks.map(d => d.industry))];
+
+    let data = []
+
+    for (let s of sectors_all) {
+
+        // Get the relevant stocks and sum the shares
+        let relevantStocks = stocks.filter(row => { return row.sector === s })
+        let share = relevantStocks.map(stock => stock.share).reduce((prev, next) => parseFloat(prev) + parseFloat(next));
+
+        // This is the root node for this sector
+        let node = {
+            "nodeData": {
+                "name": s,
+                "share": share
+            }
+        }
+
+        let subdata = []
+        for (let i of industries_all) {
+
+            // Get the relevant stocks and sum the shares
+            let relevantStocks = stocks.filter(row => { return row.industry === i & row.sector === s })
+            
+            if (relevantStocks.length > 0) {
+                let share = relevantStocks.map(stock => stock.share).reduce((prev, next) => parseFloat(prev) + parseFloat(next));
+
+                // This is a sub node for the current sector
+                subdata.push({
+                    "nodeData": {
+                        "name": i,
+                        "share": share
+                    }
+                })
+            }
+        }
+        node.subData = subdata
+        data.push(node)
+    }
+    return data
+}
+
+function getData_barChart() {
     return daily
 }
 
-function getData_lineGraph(){
+function getData_lineGraph() {
     return daily
 }
 
 function getData_treeMap() {
-    let data = daily_stocks
 
     let ranges = ["a", "y", "m", "w"]
 
-    const tickers_all = [...new Set(data.map(d => d.ticker))];
+    const tickers_all = [...new Set(daily_stocks.map(d => d.ticker))];
 
     let output = []
     for (let dRange of ranges) {
@@ -93,15 +139,18 @@ function getData_treeMap() {
 
         for (let t of tickers_all) {
             relevantData_ticker = relevantData.filter(row => { return row.ticker === t })
-            first = relevantData_ticker[0]
-            last = relevantData_ticker[relevantData_ticker.length - 1]
+            if (relevantData_ticker != null) {
+                first = relevantData_ticker[0]
+                last = relevantData_ticker[relevantData_ticker.length - 1]
 
-            output.push({
-                ticker: t,
-                dateRange: dRange,
-                share: last.share,
-                return: ((last.value / first.value) * 100).toFixed(2)
-            })
+                output.push({
+                    ticker: t,
+                    dateRange: dRange,
+                    share: last.share,
+                    return: ((last.value / first.value) * 100).toFixed(2)
+                })
+            }
+
         }
     }
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getReturns, roundedRect, colours } from '../utils.js';
+import { getReturns, roundedRect, colours_core } from '../utils.js';
 
 import * as d3 from 'd3'
 
