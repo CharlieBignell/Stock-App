@@ -18,8 +18,8 @@ class PieChart extends Component {
         return <div id={this.props.id}>
             <div id="loading_pieChart"></div>
             <div id="tooltip_pieChart" className="tooltip">
-                {/* <p id="tooltip_treeMap_ticker"></p>
-                <p id="tooltip_treeMap_return"></p> */}
+                <p id="tooltip_pieChart_name"></p>
+                <p id="tooltip_pieChart_share"></p>
             </div>
         </div>
     }
@@ -43,9 +43,9 @@ function pieChart(data, id, colours) {
 
         let dataset = JSON.parse(data).pieChart
 
-        for(let i = 0; i < dataset.length; i++){
+        for (let i = 0; i < dataset.length; i++) {
             dataset[i].nodeData.colour = colours[i]
-            for (let sd of dataset[i].subData){
+            for (let sd of dataset[i].subData) {
                 sd.nodeData.colour = colours[i]
             }
         }
@@ -108,7 +108,7 @@ function pieChart(data, id, colours) {
                 .outerRadius((index + 1) * pieWidth - 1)
                 .innerRadius(index * pieWidth)
 
-            var g = svg.selectAll(".arc" + index)
+            let g = svg.selectAll(".arc" + index)
                 .data(pie(_data))
                 .enter()
                 .append("g")
@@ -116,7 +116,10 @@ function pieChart(data, id, colours) {
 
             g.append("path")
                 .attr("d", arc)
+                .attr("id", (d) => d.data.nodeData.name.replace(/ /g, "_").replace('&', ''))
                 .style("fill", (d) => d.data.nodeData.colour)
+                .on('mousemove', function (event, d) { onMouseMove(event, d) })
+                .on("mouseout", function (event, d) { onMouseLeave(event, d) })
         }
 
         for (var i = 0; i < multiLevelData.length; i++) {
@@ -124,7 +127,82 @@ function pieChart(data, id, colours) {
             drawPieChart(_cData, i);
         }
 
+        let tooltip = d3.select(`#tooltip_pieChart`)
+
+        function onMouseMove(event, d) {
+            tooltip
+                .style("opacity", "1")
+                .style("transform",
+                    `translate(
+                calc(-50% + ${event.x}px),
+                calc(-110% + ${event.y}px))`)
+
+            tooltip
+                .select("#tooltip_pieChart_name")
+                .text(d.data.nodeData.name)
+
+            tooltip
+
+                .select("#tooltip_pieChart_share")
+                .text(parseFloat(d.data.nodeData.share).toFixed(0) + "%")
+            let dist = 15
+            let midAngle = 0
+
+            d3.select(event.path[0])
+                .transition()
+                .ease(d3.easeElastic)
+                .duration(750)
+                .attr('transform', function (d) {
+                    midAngle = ((d.endAngle - d.startAngle) / 2) + d.startAngle
+                    let x = Math.sin(midAngle) * dist
+                    let y = Math.cos(midAngle) * dist
+                    return `translate(${x}, ${-y})`
+                })
+
+            if (d.data.subData) {
+                for (let sd of d.data.subData) {
+                    d3.select(`#${sd.nodeData.name.replace(/ /g, "_").replace('&', '')}`)
+                        .transition()
+                        .ease(d3.easeElastic)
+                        .duration(750)
+                        .attr('transform', function (d) {
+                            let dist = 15
+                            let x = Math.sin(midAngle) * dist
+                            let y = Math.cos(midAngle) * dist
+                            return `translate(${x}, ${-y})`
+                        })
+                }
+            }
+
+            d3.select("#mainTooltip").classed("hidden", false)
+        }
+
+        function onMouseLeave(event, d) {
+            tooltip.style("opacity", "0")
+
+            d3.select(event.path[0])
+                .transition()
+                .ease(d3.easeLinear)
+                .duration(400)
+                .attr('transform', 'translate(0,0)')
+
+            
+            if (d.data.subData) {
+                for (let sd of d.data.subData) {
+                    d3.select(`#${sd.nodeData.name.replace(/ /g, "_").replace('&', '')}`)
+                        .transition()
+                        .ease(d3.easeLinear)
+                        .duration(400)
+                        .attr('transform', 'translate(0,0)')
+                }
+
+                d3.select("#mainTooltip").classed("hidden", true)
+            }
+        }
+
+
     }
+
 }
 
 export default PieChart;

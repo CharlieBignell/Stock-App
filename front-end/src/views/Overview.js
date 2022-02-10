@@ -35,16 +35,16 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
-                    <PieChart
+                    {/* <PieChart
                         data={this.state.data}
                         id="pieChart"
-                    />
+                    /> */}
                     {/* <TreeMap
                         data={this.state.data}
                         id="treeMap"
                         dateRange={this.state.dateRange}
-                    />
-                    <LineGraph
+                    /> */}
+                    {/* <LineGraph
                         data={this.state.data}
                         id="lineGraph"
                         movingAvgWin={200}

@@ -58,7 +58,7 @@ function barChart(data, id, dateRange = "a") {
         let minVal = 0
         bars.forEach(function (b, i) {
             b.val = getReturns(dataset, b.name, dateRange)
-            b.colour = colours[i]
+            b.colour = colours_core[i]
             maxVal = Math.max(b.val, maxVal)
             minVal = Math.min(b.val, minVal)
         })

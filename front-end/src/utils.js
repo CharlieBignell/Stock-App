@@ -1,16 +1,16 @@
 import moment from 'moment';
 
 export let red = "#e78380"
-export let blue = "#6bade2"
-export let green = "#72ca76"
+export let blue = "#5891e0"
+export let green = "#5ddb58"
 export let yellow = "#e6e675"
 export let purple = "#bd63eb"
 export let orange = "#eda961"
-export let turquoise = "#59c3d4"
+export let turquoise = "#5bd4ba"
 export let grey = "#bfbfbf"
 
 export let colours_core = [red, blue, green, yellow, purple, orange]
-export let colours_smooth = [blue, green, yellow, orange, red, blue, purple]
+export let colours_smooth = [blue, turquoise, green, yellow, orange, red, purple]
 
 export let colourScale = ["#c94747", "#ed8585", "#c9c9c9", "#8fde85", "#55bf47"]
 
