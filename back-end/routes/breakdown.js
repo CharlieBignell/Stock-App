@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-// var mysql = require('mysql')
-// const config = require("../db.config.js");
 const csv = require('csv-parser');
 const fs = require('fs');
 
@@ -28,29 +26,20 @@ router.get('/', function (req, res, next) {
                             daily_stocks.push(row)
                         })
                         .on('end', () => {
-                            res.send([stocks, daily, daily_stocks])
+
+                            res.send(
+                                {
+                                    areaGraph: getData_areaGraph()
+                                }
+                            )
                         });
                 });
         });
 
-
-    // var connection = mysql.createConnection({
-    //     host: config.HOST,
-    //     user: config.USER,
-    //     password: config.PASSWORD,
-    //     database: config.DB
-    // })
-
-    // connection.connect()
-
-    // connection.query('SELECT * FROM stocks WHERE belongs_to = "o"', function (err, rows, fields) {
-    //     if (err) throw err
-
-    //     res.send(rows);
-    // })
-
-    // connection.end()
-
 });
+
+function getData_areaGraph(){
+    return daily_stocks
+}
 
 module.exports = router;

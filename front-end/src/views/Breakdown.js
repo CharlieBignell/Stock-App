@@ -4,11 +4,16 @@ import { formatNav } from '../utils.js';
 
 import Header from "../components/Header";
 
+import AreaGraph from "../graphs/AreaGraph";
+
 class Breakdown extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { data: "NULL" };
+        this.state = {
+            data: "NULL",
+            dateRange: "m"
+        };
 
     }
 
@@ -25,9 +30,13 @@ class Breakdown extends Component {
 
     render() {
         return (
-            <div id="main">
+            <div id="main_page">
                 <Header />
                 <div id="content">
+                    <AreaGraph
+                        data={this.state.data}
+                        id="areaGraph"
+                    />
                 </div>
             </div>
         );

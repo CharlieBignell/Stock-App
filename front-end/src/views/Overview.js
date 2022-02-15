@@ -39,24 +39,24 @@ class Overview extends Component {
                         data={this.state.data}
                         id="pieChart"
                     />
-                    {/* <TreeMap
+                    <TreeMap
                         data={this.state.data}
                         id="treeMap"
                         dateRange={this.state.dateRange}
-                    /> */}
-                    {/* <LineGraph
+                    />
+                    <LineGraph
                         data={this.state.data}
                         id="lineGraph"
                         movingAvgWin={200}
                         lines={["value", "amount_ITM", "amount_return_cum"]}
                         colours={[blue, green, red]}
                         dateRange={this.state.dateRange}
-                    /> */}
-                    {/* <BarChart
+                    />
+                    <BarChart
                         data={this.state.data}
                         id="barChart"
                         dateRange={this.state.dateRange}
-                    /> */}
+                    />
 
                 </div>
 
