@@ -85,13 +85,16 @@ function getData_pieChart() {
 
         // Get the relevant stocks and sum the shares
         let relevantStocks = stocks.filter(row => { return row.sector === s })
-        let share = relevantStocks.map(stock => stock.share).reduce((prev, next) => parseFloat(prev) + parseFloat(next));
+        let node = {}
+        if (relevantStocks.length > 0) {
+            let share = relevantStocks.map(stock => stock.share).reduce((prev, next) => parseFloat(prev) + parseFloat(next));
 
-        // This is the root node for this sector
-        let node = {
-            "nodeData": {
-                "name": s,
-                "share": share
+            // This is the root node for this sector
+            node = {
+                "nodeData": {
+                    "name": s,
+                    "share": share
+                }
             }
         }
 
@@ -100,7 +103,7 @@ function getData_pieChart() {
 
             // Get the relevant stocks and sum the shares
             let relevantStocks = stocks.filter(row => { return row.industry === i & row.sector === s })
-            
+
             if (relevantStocks.length > 0) {
                 let share = relevantStocks.map(stock => stock.share).reduce((prev, next) => parseFloat(prev) + parseFloat(next));
 
@@ -115,6 +118,8 @@ function getData_pieChart() {
         }
         node.subData = subdata
         data.push(node)
+        data.sort((a, b) => a.nodeData.share > b.nodeData.share ? -1 : 1)
+
     }
     return data
 }
@@ -139,7 +144,7 @@ function getData_treeMap() {
 
         for (let t of tickers_all) {
             relevantData_ticker = relevantData.filter(row => { return row.ticker === t })
-            if (relevantData_ticker != null) {
+            if (relevantData_ticker.length > 0) {
                 first = relevantData_ticker[0]
                 last = relevantData_ticker[relevantData_ticker.length - 1]
 

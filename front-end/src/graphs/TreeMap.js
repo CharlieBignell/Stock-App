@@ -43,7 +43,7 @@ function treeMap(data, id, colourScale, colourScale_text, dateRange = "a") {
 
         let dataset = JSON.parse(data).treeMap
 
-        var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+        var margin = { top: 7, right: 7, bottom: 7, left: 7 },
             width = 1100 - margin.left - margin.right,
             height = 360 - margin.top - margin.bottom;
 
@@ -114,6 +114,7 @@ function treeMap(data, id, colourScale, colourScale_text, dateRange = "a") {
             .attr('width', (d) => d.x1 - d.x0)
             .attr('height', (d) => d.y1 - d.y0)
             .attr("class", "treeMap_rect")
+            .attr('r', 10)
             .attr("fill", (d) => scale_rect(d.data.return))
             .on('mousemove', function (event, d) { onMouseMove(event, d) })
             .on("mouseout", function () { onMouseLeave() })
@@ -146,7 +147,7 @@ function treeMap(data, id, colourScale, colourScale_text, dateRange = "a") {
             tooltip
                 .select("#tooltip_treeMap_ticker")
                 .text(d.data.ticker + ` - ${d.data.share}%`)
-            
+
             let prefix = d.data.return >= 100 ? "+" : ""
 
             tooltip

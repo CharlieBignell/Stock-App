@@ -1,5 +1,12 @@
 @use '../colours';
 
+#treeMap{
+    width: max-content;
+    border-radius: 10px;
+    background-color: white;
+    // max-height: 360px;
+}
+
 .treeMap_rect{
     stroke: white;
     stroke-width: 2px;

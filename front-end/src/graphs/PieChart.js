@@ -72,6 +72,7 @@ function pieChart(data, id, colours) {
         let currentLevelData = []
         let queue = []
 
+
         for (let d of dataset) {
             queue.push(d)
         }
@@ -186,7 +187,7 @@ function pieChart(data, id, colours) {
                 .duration(400)
                 .attr('transform', 'translate(0,0)')
 
-            
+
             if (d.data.subData) {
                 for (let sd of d.data.subData) {
                     d3.select(`#${sd.nodeData.name.replace(/ /g, "_").replace('&', '')}`)

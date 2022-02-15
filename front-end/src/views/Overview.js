@@ -14,7 +14,7 @@ class Overview extends Component {
         super(props);
         this.state = {
             data: "NULL",
-            dateRange: "a"
+            dateRange: "m"
         };
 
     }
@@ -35,10 +35,10 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
-                    {/* <PieChart
+                    <PieChart
                         data={this.state.data}
                         id="pieChart"
-                    /> */}
+                    />
                     {/* <TreeMap
                         data={this.state.data}
                         id="treeMap"
