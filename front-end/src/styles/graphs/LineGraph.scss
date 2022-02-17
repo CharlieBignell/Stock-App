@@ -6,11 +6,6 @@
     stroke: none;
 }
 
-.tick>line {
-    stroke: colours.$gridline !important;
-    stroke-width: 1.5px;
-}
-
 .axis_lineGraph {
     color: colours.$axisText;
     font-size: 120%;
@@ -29,6 +24,12 @@
     stroke-width: 3;
     fill: none;
 }
+
+.axis_lineGraph > .tick > line {
+    stroke: colours.$gridline !important;
+    stroke-width: 1.5px;
+}
+
 
 // Tooltip stuff
 #date {
@@ -102,3 +103,4 @@
 hr {
     margin: 2px 0 2px 0;
 }
+

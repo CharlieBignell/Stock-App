@@ -14,7 +14,7 @@ class Overview extends Component {
         super(props);
         this.state = {
             data: "NULL",
-            dateRange: "m"
+            dateRange: "a"
         };
 
     }

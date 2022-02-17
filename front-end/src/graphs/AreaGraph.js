@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { colours_core } from '../utils.js';
+import { colours_smooth } from '../utils.js';
 
 import * as d3 from 'd3'
-import { interpolateRainbow } from 'd3-scale-chromatic'
+import {timeDay} from 'd3-time'
 
 import '../styles/graphs/AreaGraph.scss';
 
@@ -18,10 +18,16 @@ class AreaGraph extends Component {
     render() {
         return <div id={this.props.id}>
             <div id="loading_areaGraph"></div>
-            {/* <div id="tooltip_areaGraph" className="tooltip">
-                <p id="tooltip_areaGraph_name"></p>
-                <p id="tooltip_areaGraph_price"></p>
-            </div> */}
+
+            <div id="tooltip_areaGraph" className="tooltip">
+                <div className="tooltip_date">
+                    <span id="date"></span>
+                </div>
+                <div id="tooltip_items">
+
+                </div>
+
+            </div>
         </div>
     }
 }
@@ -46,22 +52,24 @@ function areaGraph(data, id) {
 
         const margin = { top: 50, right: 50, bottom: 50, left: 90 }
         const width = 1000 - margin.left - margin.right
-        const height = 500 - margin.top - margin.bottom
+        const height = 900 - margin.top - margin.bottom
 
-        const dateParser_axis = d3.timeParse("%Y-%m-%d")
-        const xAccessor = (d) => dateParser_axis(d.date)
+        const dateParser = d3.timeParse("%Y-%m-%d")
+        const dateFormatter = d3.timeFormat("%B %-d %Y")
 
         // Get a list of all column headers except date
         const keys = Object.keys(dataset[0])
         keys.shift()
         const stackedData = d3.stack().keys(keys)(dataset)
 
-        let colours = []
+        // Set up the colours array
+        let r = Math.ceil(keys.length / colours_smooth.length)
+        let colours = [].concat(...Array.from({ length: r }, () => colours_smooth))
+
         for (let i = 0; i < keys.length; i++) {
             colours.push({
-                key: keys[keys.length - i - 1],
-                colour: d3.interpolateRainbow(i / keys.length
-                )
+                key: keys[i],
+                colour: colours[i]
             })
         }
 
@@ -72,23 +80,6 @@ function areaGraph(data, id) {
             .append("g")
             .attr("transform",
                 `translate(${margin.left}, ${margin.top})`);
-
-        // Add X axis
-        const x = d3.scaleTime()
-            .domain(d3.extent(dataset, xAccessor))
-            .range([0, width]);
-
-        const xAxis = svg.append("g")
-            .attr("transform", `translate(0, ${height})`)
-            .call(d3.axisBottom(x))
-
-        // Add Y axis
-        const y = d3.scaleLinear()
-            .domain([0, 100])
-            .range([height, 0]);
-
-        const yAxis = svg.append("g")
-            .call(d3.axisLeft(y).tickValues([0, 25, 50, 75, 100]))
 
         // Add a clipPath: everything out of this area won't be drawn.
         const clip = svg
@@ -108,6 +99,42 @@ function areaGraph(data, id) {
 
         const areaChart = svg.append('g')
             .attr("clip-path", "url(#clip)")
+            .attr("class", "areaGraph_plot")
+            .on('mousemove', function (event, d) { onMouseMove(event, d) })
+
+        // Add X axis
+        const xAccessor = (d) => dateParser(d.date)
+
+        const x = d3.scaleTime()
+            .domain(d3.extent(dataset, xAccessor))
+            .range([0, width]);
+
+        const xAxisGenerator = d3.axisBottom(x)
+            .tickSizeInner(0)
+            .tickSizeOuter(0)
+            .tickPadding(15)
+
+        const xAxis = svg.append("g")
+            .attr("transform", `translate(0, ${height})`)
+            .call(xAxisGenerator)
+            .attr("class", "axis_areaGraph")
+
+
+        // Add Y axis
+        const y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height, 0]);
+
+        const yAxisGenerator = d3.axisLeft(y)
+            .tickSize(-width, 0, 0)
+            .tickFormat((x) => `${x}%`)
+            .tickValues([0, 25, 50, 75, 100])
+            .tickPadding(15)
+
+        const yAxis = svg.append("g")
+            .call(yAxisGenerator)
+            .attr("class", "axis_areaGraph")
+
 
         const area = d3.area()
             .x((d) => x(xAccessor(d.data)))
@@ -119,12 +146,13 @@ function areaGraph(data, id) {
             .data(stackedData)
             .join("path")
             .style("fill", (d) => colours.find(c => c.key === d.key).colour)
+            .style("stroke", (d) => colours.find(c => c.key === d.key).colour)
             .attr("d", area)
 
         areaChart
             .append("g")
             .attr("class", "brush")
-            .call(brush);
+            .call(brush)
 
         let idleTimeout
 
@@ -139,7 +167,6 @@ function areaGraph(data, id) {
                 if (!idleTimeout) return idleTimeout = setTimeout(idled, 300); // This allows to wait a little bit
                 x.domain(d3.extent(dataset, xAccessor))
             } else {
-                console.log(event)
                 x.domain([x.invert(extent[0]), x.invert(extent[1])])
                 areaChart.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
             }
@@ -147,12 +174,63 @@ function areaGraph(data, id) {
             // Update axis and area position
             xAxis.transition()
                 .duration(800)
-                .call(d3.axisBottom(x).ticks(5))
+                .call(d3.axisBottom(x))
 
             areaChart
                 .selectAll("path")
                 .transition().duration(800)
                 .attr("d", area)
+        }
+
+
+        const yAccessor = function (date, key) {
+            let n = d3.timeDay.count(dateParser(dataset[0].date), date)
+            return dataset[n][key]
+        }
+
+        const tooltip = d3.select("#tooltip_areaGraph")
+
+        const tooltipItems = d3.select("#tooltip_items")
+
+        function onMouseMove(event) {
+
+            // Get the x-axis position
+            const mousePosition = d3.pointer(event)
+            const hoveredDate = x.invert(mousePosition[0])
+
+            // // Get the closest date point to our position
+            const getDistance = (d) => Math.abs(xAccessor(d) - hoveredDate)
+            const closestIndex = d3.scan(dataset, (a, b) => getDistance(a) - getDistance(b))
+            const closestDataPoint = dataset[closestIndex]
+            const closestXValue = xAccessor(closestDataPoint)
+
+            tooltipItems.selectAll("*").remove()
+
+            // Update the tooltip for each key
+            keys.forEach(function (k) {
+                let share = parseFloat(yAccessor(closestXValue, k)).toFixed(0)
+
+                
+                tooltipItems
+                    .append("p")
+                    .html(`${k}: ${share}%`)
+                    .style("color", colours.find(c => c.key === k).colour)
+            })
+
+            // Format the tooltip 
+            tooltip
+                .select("#date")
+                .text(dateFormatter(closestXValue))
+
+            tooltip
+                .style("transform",
+                    `translate(
+                    calc( -35% + ${x(closestXValue) + margin.left}px),
+                    calc(10% + ${event.clientY}px))`)
+                .style("opacity", 1)
+                .style("transition", "0.5s")
+
+
         }
     }
 }
