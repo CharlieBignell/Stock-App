@@ -1,10 +1,11 @@
-import React, { Component } from "react";
-import '../styles/views/Breakdown.scss';
-import { formatNav } from '../utils.js';
+import React, { Component } from "react"
+import '../styles/views/Breakdown.scss'
+import { formatNav } from '../utils.js'
 
-import Header from "../components/Header";
+import Header from "../components/Header"
 
-import AreaGraph from "../graphs/AreaGraph";
+import AreaGraph from "../graphs/AreaGraph"
+import SimpleLine from "../graphs/SimpleLine"
 
 class Breakdown extends Component {
 
@@ -12,7 +13,8 @@ class Breakdown extends Component {
         super(props);
         this.state = {
             data: "NULL",
-            dateRange: "m"
+            dateRange: "a",
+            subject: "AAPL"
         };
 
     }
@@ -33,12 +35,17 @@ class Breakdown extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
-                    <AreaGraph
+                    <SimpleLine
+                        data={this.state.data}
+                        id="simpleLine"
+                        movingAvgWin={200}
+                        dateRange={this.state.dateRange}
+                        subject={this.state.subject}
+                    />
+                    {/* <AreaGraph
                         data={this.state.data}
                         id="areaGraph"
-                    />
-
-
+                    /> */}
                 </div>
             </div>
         );

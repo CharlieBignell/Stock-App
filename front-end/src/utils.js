@@ -2,7 +2,7 @@ import moment from 'moment';
 
 export let red = "#e78380"
 export let blue = "#5891e0"
-export let green = "#5ddb58"
+export let green = "#60b35d"
 export let yellow = "#e6e675"
 export let purple = "#bd63eb"
 export let orange = "#eda961"
@@ -28,7 +28,7 @@ export function formatNav(target) {
 
 // Format a value (money)
 export function formatValue(x) {
-    // Round to integer
+
     x = Math.round(parseFloat(x))
 
     // Add prefix if negative

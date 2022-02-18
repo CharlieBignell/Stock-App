@@ -35,7 +35,8 @@ router.get('/', function (req, res, next) {
                                 .on('end', () => {
                                     res.send(
                                         {
-                                            areaGraph: getData_areaGraph()
+                                            areaGraph: getData_areaGraph(),
+                                            simpleLine: getData_simpleLine()
                                         }
                                     )
                                 });
@@ -45,32 +46,11 @@ router.get('/', function (req, res, next) {
 });
 
 function getData_areaGraph() {
-    // Date.prototype.addDays = function (days) {
-    //     var date = new Date(this.valueOf());
-    //     date.setDate(date.getDate() + days);
-    //     return date;
-    // }
-
-    // let currentDate = new Date(daily_stocks[0].date)
-    // let lastDate = new Date(daily_stocks[daily_stocks.length - 1].date)
-
-    // let output = []
-
-    // while (currentDate <= lastDate) {
-    //     let relevantDays = daily_stocks.filter(row => { return new Date(row.date).getDate() === currentDate.getDate() })
-
-    //     let day = { date: `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDay()}` }
-
-    //     if (relevantDays.length > 0) {
-    //         for (let s of relevantDays) {
-    //             day[s.ticker] = s.value
-    //         }
-    //     }
-    //     output.push(day)
-    //     currentDate.setDate(currentDate.getDate() + 1)
-    // }
-
     return daily_value_breakdown
+}
+
+function getData_simpleLine(){
+    return {all: daily, stock: daily_stocks}
 }
 
 module.exports = router;

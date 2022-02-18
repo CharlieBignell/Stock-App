@@ -1,0 +1,6 @@
+@use '../colours';
+
+#simpleLine > svg > g > path{
+    stroke-width: 3px;
+    fill: none;
+}
