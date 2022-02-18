@@ -1,6 +1,11 @@
 @use '../colours';
 
-#simpleLine > svg > g > path{
+#simpleLine>svg>g>path {
     stroke-width: 3px;
     fill: none;
 }
+
+// .area {
+//     fill: url(#area-gradient);
+//     stroke: none;
+// }

@@ -48,7 +48,7 @@ function simpleLine(data, id, movingAvgWin, dateRange = "a", subject = "all") {
             let relevant = dataset.stock.filter(r => r.ticker === subject)
             relevant.forEach((d) => data.push({ date: d.date, value: parseFloat(d.close) }))
         }
-        
+
         data = setRange(data, dateRange)
         data = getMovingAvgs(data, ["value"], movingAvgWin)
 
@@ -75,7 +75,7 @@ function simpleLine(data, id, movingAvgWin, dateRange = "a", subject = "all") {
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x).ticks(0))
-            
+
 
         var y = d3.scaleLinear()
             .domain(d3.extent(data, yAccessor))
@@ -84,13 +84,37 @@ function simpleLine(data, id, movingAvgWin, dateRange = "a", subject = "all") {
         svg.append("g")
             .call(d3.axisLeft(y).ticks(0))
 
+        const area = d3.area()
+            .x((d) => x(xAccessor(d)))
+            .y0(height)
+            .y1((d) => y(yAccessor(d)));
+
+        const line = d3.line()
+            .x((d) => x(xAccessor(d)))
+            .y((d) => y(yAccessor(d)))
+
+        // svg.append("linearGradient")
+        //     .attr("id", "area-gradient")
+        //     .attr("gradientUnits", "userSpaceOnUse")
+        //     .attr("x1", '0%').attr("y1", '0%')
+        //     .attr("x2", '0%').attr("y2", '100%')
+
+        //     .selectAll("stop")
+        //     .data([
+        //         { offset: "0%", color: colour },
+        //         { offset: "95%", color: "transparent" }
+        //     ])
+        //     .enter().append("stop")
+        //     .attr("offset", function (d) { return d.offset; })
+        //     .attr("stop-color", function (d) { return d.color; });
+
+
         svg.append("path")
             .datum(data)
+            // .attr("class", "area")
             .attr("stroke", colour)
-            .attr("d", d3.line()
-                .x((d) => x(xAccessor(d)))
-                .y((d) => y(yAccessor(d)))
-            )
+            .attr("d", line);
+            
     }
 
 }
