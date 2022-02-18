@@ -107,7 +107,7 @@ function barChart(data, id, dateRange = "a") {
             .call(yAxis)
             .selectAll("text")
             .attr("class", "axisText")
-            .attr("color", "#454B53")
+            .attr("axis_barChart")
 
         svg.append("g")
             .attr("class", "axis")

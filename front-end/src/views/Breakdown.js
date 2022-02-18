@@ -42,10 +42,10 @@ class Breakdown extends Component {
                         dateRange={this.state.dateRange}
                         subject={this.state.subject}
                     />
-                    {/* <AreaGraph
+                    <AreaGraph
                         data={this.state.data}
                         id="areaGraph"
-                    /> */}
+                    />
                 </div>
             </div>
         );

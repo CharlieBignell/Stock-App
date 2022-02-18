@@ -19,6 +19,11 @@
     cursor: crosshair;
 }
 
+.tick > line {
+    stroke: colours.$gridline !important;
+    stroke-width: 1.5px;
+}
+
 #tooltip_barChart{
     width: 100px;
 }
