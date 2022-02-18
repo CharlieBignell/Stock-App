@@ -37,6 +37,8 @@ class Breakdown extends Component {
                         data={this.state.data}
                         id="areaGraph"
                     />
+
+
                 </div>
             </div>
         );

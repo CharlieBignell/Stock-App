@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { colours_smooth } from '../utils.js';
+import React, { Component } from "react"
+import { colours_smooth } from '../utils.js'
 
 import * as d3 from 'd3'
-import {timeDay} from 'd3-time'
+import { timeDay } from 'd3-time'
 
-import '../styles/graphs/AreaGraph.scss';
+import '../styles/graphs/AreaGraph.scss'
 
 class AreaGraph extends Component {
     componentDidMount() {
@@ -45,7 +45,7 @@ function areaGraph(data, id) {
 
         // Clear the loading text
         while (container_loading.firstChild) {
-            container_loading.removeChild(container_loading.lastChild);
+            container_loading.removeChild(container_loading.lastChild)
         }
 
         let dataset = JSON.parse(data).areaGraph
@@ -55,7 +55,7 @@ function areaGraph(data, id) {
         const height = 900 - margin.top - margin.bottom
 
         const dateParser = d3.timeParse("%Y-%m-%d")
-        const dateFormatter = d3.timeFormat("%B %-d %Y")
+        const dateFormatter = d3.timeFormat("%b %-d %Y")
 
         // Get a list of all column headers except date
         const keys = Object.keys(dataset[0])
@@ -78,8 +78,7 @@ function areaGraph(data, id) {
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
-            .attr("transform",
-                `translate(${margin.left}, ${margin.top})`);
+            .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
         // Add a clipPath: everything out of this area won't be drawn.
         const clip = svg
@@ -90,7 +89,7 @@ function areaGraph(data, id) {
             .attr("width", width)
             .attr("height", height)
             .attr("x", 0)
-            .attr("y", 0);
+            .attr("y", 0)
 
         // Add brushing
         const brush = d3.brushX()                 // Add the brush feature using the d3.brush function
@@ -100,14 +99,15 @@ function areaGraph(data, id) {
         const areaChart = svg.append('g')
             .attr("clip-path", "url(#clip)")
             .attr("class", "areaGraph_plot")
-            .on('mousemove', function (event, d) { onMouseMove(event, d) })
+            .on('mousemove', (event, d) => onMouseMove(event, d))
+            .on('mouseout', () => onMouseLeave())
 
         // Add X axis
         const xAccessor = (d) => dateParser(d.date)
 
         const x = d3.scaleTime()
             .domain(d3.extent(dataset, xAccessor))
-            .range([0, width]);
+            .range([0, width])
 
         const xAxisGenerator = d3.axisBottom(x)
             .tickSizeInner(0)
@@ -119,11 +119,10 @@ function areaGraph(data, id) {
             .call(xAxisGenerator)
             .attr("class", "axis_areaGraph")
 
-
         // Add Y axis
         const y = d3.scaleLinear()
             .domain([0, 100])
-            .range([height, 0]);
+            .range([height, 0])
 
         const yAxisGenerator = d3.axisLeft(y)
             .tickSize(-width, 0, 0)
@@ -156,7 +155,7 @@ function areaGraph(data, id) {
 
         let idleTimeout
 
-        function idled() { idleTimeout = null; }
+        function idled() { idleTimeout = null }
 
         // A function that update the chart for given boundaries
         function updateChart(event, d) {
@@ -164,7 +163,7 @@ function areaGraph(data, id) {
 
             // If no selection, back to initial coordinate. Otherwise, update X axis domain
             if (!extent) {
-                if (!idleTimeout) return idleTimeout = setTimeout(idled, 300); // This allows to wait a little bit
+                if (!idleTimeout) return idleTimeout = setTimeout(idled, 300) // This allows to wait a little bit
                 x.domain(d3.extent(dataset, xAccessor))
             } else {
                 x.domain([x.invert(extent[0]), x.invert(extent[1])])
@@ -210,11 +209,21 @@ function areaGraph(data, id) {
             keys.forEach(function (k) {
                 let share = parseFloat(yAccessor(closestXValue, k)).toFixed(0)
 
-                
                 tooltipItems
+                    .append("div")
+                    .attr("id", `${k.replace(".", "")}_div`)
+                    .attr("class", "itemDiv")
+
+                d3.select(`#${k.replace(".", "")}_div`)
                     .append("p")
-                    .html(`${k}: ${share}%`)
+                    .html(k)
                     .style("color", colours.find(c => c.key === k).colour)
+
+                d3.select(`#${k.replace(".", "")}_div`)
+                    .append("p")
+                    .html(`${share}%`)
+                    .style("color", colours.find(c => c.key === k).colour)
+
             })
 
             // Format the tooltip 
@@ -228,11 +237,13 @@ function areaGraph(data, id) {
                     calc( -35% + ${x(closestXValue) + margin.left}px),
                     calc(10% + ${event.clientY}px))`)
                 .style("opacity", 1)
-                .style("transition", "0.5s")
+        }
 
-
+        function onMouseLeave() {
+            // Remove the tooltip and line
+            tooltip.style("opacity", 0)
         }
     }
 }
 
-export default AreaGraph;
+export default AreaGraph

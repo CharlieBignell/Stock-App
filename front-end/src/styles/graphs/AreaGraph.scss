@@ -27,8 +27,8 @@
 }
 
 #tooltip_areaGraph {
-    width: 180px;
-    background-color: colours.$gridline;
+    width: 130px;
+    background-color: rgba(48, 48, 48, 0.8);
 }
 
 .tooltip_date {
@@ -44,8 +44,14 @@
     flex-flow: column nowrap;
 }
 
-#tooltip_items>p {
-    margin: 0;
+.itemDiv{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.itemDiv > p{
+    margin:0;
     font-size: 1.3em;
     font-family: "Baloo Thambi 2";
     font-weight: 500;
