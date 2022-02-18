@@ -26,7 +26,7 @@ class Overview extends Component {
     }
 
     componentDidMount() {
-        formatNav("item_overview")
+        formatNav("item_overview", "2010-01-01")
         this.getData();
     }
 
@@ -35,7 +35,7 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
-                    <PieChart
+                    {/* <PieChart
                         data={this.state.data}
                         id="pieChart"
                     />
@@ -56,7 +56,7 @@ class Overview extends Component {
                         data={this.state.data}
                         id="barChart"
                         dateRange={this.state.dateRange}
-                    />
+                    /> */}
 
                 </div>
 

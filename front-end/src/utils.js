@@ -17,13 +17,27 @@ export let colourScale = ["#c94747", "#ed8585", "#c9c9c9", "#8fde85", "#55bf47"]
 export let colourScale_text = ["#611818","#8f3232", "#575757", "#326625", "#254f1a"]
 
 // Change the active nav item
-export function formatNav(target) {
+export function formatNav(target, date) {
+
     let items = document.querySelectorAll('.item')
     items.forEach(function (i) {
         i.classList.remove('active')
     });
 
     document.getElementById(target).classList.add('active')
+    document.getElementById(`${target}_underline`).classList.add('activeUnderline')
+    document.getElementById("TITM")
+
+    function showTime(){
+        let time = moment(date).fromNow(true)
+
+        document.getElementById("TITM").innerText = time;
+        
+        setTimeout(showTime, 1000);
+        
+    }
+     
+    showTime();
 }
 
 // Format a value (money)
