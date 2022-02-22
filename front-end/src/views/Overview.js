@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import '../styles/views/Overview.scss';
+
 import { formatNav, red, green, blue } from '../utils.js';
 
 import Header from "../components/Header";
@@ -7,6 +7,7 @@ import LineGraph from "../graphs/LineGraph";
 import BarChart from "../graphs/BarChart";
 import TreeMap from "../graphs/TreeMap";
 import PieChart from "../graphs/PieChart";
+import Card from "../components/Card";
 
 class Overview extends Component {
 
@@ -35,6 +36,30 @@ class Overview extends Component {
             <div id="main_page">
                 <Header />
                 <div id="content">
+
+                    <div id="content_left" className="content_panel">
+                        <div id="cards_topLeft">
+                            <Card id="card_selector" />
+                            <Card id="card_summary" />
+                        </div>
+                        <Card id="card_bar" />
+                    </div>
+
+                    <div id="content_center" className="content_panel">
+                        <Card id="card_line" />
+                        <Card id="card_treemap" />
+                    </div>
+
+                    <div id="content_right" className="content_panel">
+                        <Card id="card_input" />
+                        <Card id="card_pie">
+                            <PieChart
+                                data={this.state.data}
+                                id="pieChart"
+                            />
+                        </Card>
+                    </div>
+
                     {/* <PieChart
                         data={this.state.data}
                         id="pieChart"

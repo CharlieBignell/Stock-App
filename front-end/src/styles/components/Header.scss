@@ -3,24 +3,28 @@
 #main_header {
     background-color: colours.$primary_light;
     color: white;
-    padding: 10px;
+    // padding: 10px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
-    height: 50px;
+    flex-basis: 6%;
 }
 
-#main_left{
+#content{
+    flex-basis: 94%
+}
+
+#main_left {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
 }
 
-#navItems :nth-child(2){
+#navItems :nth-child(2) {
     margin: 0 20px 0 20px;
 }
 
-#navItems{
+#navItems {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -34,63 +38,63 @@
 }
 
 .active {
-    color: white ;
+    color: white;
 }
 
-.activeUnderline{
+.activeUnderline {
     opacity: 1 !important;
 }
 
-.underline{
+.underline {
     height: 3px;
-    background: rgb(117,87,181);
-    background: linear-gradient(59deg, rgba(117,87,181,1) 0%, rgba(47,119,158,1) 100%);
+    background: rgb(117, 87, 181);
+    background: linear-gradient(59deg, rgba(117, 87, 181, 1) 0%, rgba(47, 119, 158, 1) 100%);
     width: 100%;
     border-radius: 2px;
-    margin:0 !important;
+    margin: 0 !important;
     opacity: 0;
 }
 
-.item:not(.active):hover{
-    color: white ;
+.item:not(.active):hover {
+    color: white;
     transition: 0.5s;
 }
 
-h1{
+h1 {
     font-size: 2.5em;
     font-weight: 500;
     margin: 0 20px 0 10px;
 }
 
-#separator{
+#separator {
     border-left: 3px solid colours.$deselected;
     height: 30px;
     margin: 0 15px 0 15px;
     border-radius: 2px;
 }
 
-#main_right{
+#main_right {
     display: flex;
     flex-flow: column nowrap;
     margin-right: 10px;
 }
 
-#main_right >p{
+#main_right>p {
     margin: 0;
     line-height: 1.3em;
 }
 
-#header_right_title{
+#header_right_title {
     color: white;
     font-size: 1.1em;
-    cursor: pointer;
+    cursor: default;
     height: min-content;
     text-align: right;
 }
 
-#TITM{
+#TITM {
     color: white;
     font-size: 1.4em;
-    cursor: pointer;
+    cursor: default;
     text-align: right;
 }

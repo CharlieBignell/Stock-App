@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import '../styles/views/Breakdown.scss'
+
 import { formatNav } from '../utils.js'
 
 import Header from "../components/Header"
@@ -26,7 +26,7 @@ class Breakdown extends Component {
     }
 
     componentDidMount() {
-        formatNav("item_breakdown")
+        formatNav("item_breakdown", "2010-01-01")
         this.getData();
     }
 

@@ -52,8 +52,8 @@ function pieChart(data, id, colours) {
 
         const margin = { top: 20, right: 20, bottom: 20, left: 20, }
 
-        const width = 400 - margin.left - margin.right
-        const height = 400 - margin.top - margin.bottom
+        const width = document.getElementById("card_pie").clientWidth - margin.left - margin.right
+        const height = document.getElementById("card_pie").clientHeight - margin.top - margin.bottom
 
         const maxRadius = Math.min(width, height) / 2;
 

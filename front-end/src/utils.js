@@ -14,7 +14,7 @@ export let colours_smooth = [blue, turquoise, green, yellow, orange, red, purple
 
 export let colourScale = ["#c94747", "#ed8585", "#c9c9c9", "#8fde85", "#55bf47"]
 
-export let colourScale_text = ["#611818","#8f3232", "#575757", "#326625", "#254f1a"]
+export let colourScale_text = ["#611818", "#8f3232", "#575757", "#326625", "#254f1a"]
 
 // Change the active nav item
 export function formatNav(target, date) {
@@ -28,16 +28,76 @@ export function formatNav(target, date) {
     document.getElementById(`${target}_underline`).classList.add('activeUnderline')
     document.getElementById("TITM")
 
-    function showTime(){
-        let time = moment(date).fromNow(true)
-
+    function showTime() {
+        let time = getTimeString(moment(date, "YYYY-MM-DD"))
         document.getElementById("TITM").innerText = time;
-        
         setTimeout(showTime, 1000);
-        
     }
-     
+
     showTime();
+}
+
+export function getTimeString(date) {
+    let diff_year = moment().diff(date, "years", true)
+    let diff_month = moment().diff(date, "months", true)
+    let diff_days = moment().diff(date, "days", true)
+    let diff_hours = moment().diff(date, "hours", true)
+    let diff_minutes = moment().diff(date, "minutes", true)
+    let diff_seconds = moment().diff(date, "seconds", true)
+
+    let remaining = moment()
+    let timeString = ""
+
+    if (diff_year > 1) {
+        let y = Math.floor(diff_year)
+        timeString += y > 1 ? `${y} years, ` : `${y} year, `
+        remaining = remaining.subtract(y, "years")
+        diff_month = remaining.diff(date, "months", true)
+        diff_days = remaining.diff(date, "days", true)
+        diff_hours = remaining.diff(date, "hours", true)
+        diff_minutes = remaining.diff(date, "minutes", true)
+        diff_seconds = remaining.diff(date, "seconds", true)
+
+    }
+
+    if (diff_month > 1) {
+        let y = Math.floor(diff_month)
+        timeString += y > 1 ? `${y} months, ` : `${y} month, `
+        remaining = remaining.subtract(y, "months")
+        diff_days = remaining.diff(date, "days", true)
+        diff_hours = remaining.diff(date, "hours", true)
+        diff_minutes = remaining.diff(date, "minutes", true)
+        diff_seconds = remaining.diff(date, "seconds", true)
+    }
+
+    if (diff_days > 1) {
+        let y = Math.floor(diff_days)
+        timeString += y > 1 ? `${y} days, ` : `${y} day, `
+        remaining = remaining.subtract(y, "days")
+        diff_hours = remaining.diff(date, "hours", true)
+        diff_minutes = remaining.diff(date, "minutes", true)
+        diff_seconds = remaining.diff(date, "seconds", true)
+    }
+
+    if (diff_hours > 1) {
+        let y = Math.floor(diff_hours)
+        timeString += y > 1 ? `${y} hours, ` : `${y} hour, `
+        remaining = remaining.subtract(y, "hours")
+        diff_minutes = remaining.diff(date, "minutes", true)
+        diff_seconds = remaining.diff(date, "seconds", true)
+    }
+
+    if (diff_minutes > 1) {
+        let y = Math.floor(diff_minutes)
+        timeString += y > 1 ? `${y} minutes, ` : `${y} minute, `
+        remaining = remaining.subtract(y, "minutes")
+        diff_seconds = remaining.diff(date, "seconds", true)
+    }
+
+    let y = Math.floor(diff_seconds)
+    timeString += y > 1 ? `${y} seconds ` : `${y} second `
+
+    return timeString
 }
 
 // Format a value (money)

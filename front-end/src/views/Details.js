@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import '../styles/views/Details.scss';
+
 import { formatNav } from '../utils.js';
 
 import Header from "../components/Header";
@@ -19,7 +19,7 @@ class Details extends Component {
     }
 
     componentDidMount() {
-        formatNav("item_details")
+        formatNav("item_details", "2010-01-01")
         this.getData();
     }
 

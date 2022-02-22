@@ -6,45 +6,31 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: colours.$primary_dark;
+    height: 100%;
 }
 
-#content {
+html, #root{
+    height:100%;
+}
+
+
+#content{
+    display: flex;
+    flex-flow: row nowrap;
     margin: 20px;
+    height: 94%;
+}
+
+#main_page{
+    height:100%;
+    display: flex;
+    flex-flow: column nowrap;
 }
 
 #lineGraph, #barChart, #treeMap{
     margin: 20px 0;
 }
 
-#lineGraph{
-    border: 1px solid black;
-    width: max-content;
-}
-
-#barChart{
-    border: 1px solid black;
-    width: max-content;
-}
-
-#treeMap{
-    border: 1px solid black;
-    width: max-content;
-}
-
-#pieChart{
-    border: 1px solid black;
-    width: max-content;
-}
-
-#areaGraph{
-    border: 1px solid black;
-    width: max-content;
-}
-
-#simpleLine{
-    border: 1px solid black;
-    width: max-content;
-}
 
 .tooltip{
     background-color: rgba(48, 48, 48, 0.4);

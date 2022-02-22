@@ -1,0 +1,53 @@
+@use '../colours';
+
+.card {
+    background-color: colours.$primary_light;
+    color: white;
+    display: flex;
+    flex-flow: row nowrap;
+    border-radius: 12px;
+    -webkit-box-shadow: 1px 0px 18px -2px colours.$shadow;
+    box-shadow: 1px 0px 18px -2px colours.$shadow;
+}
+
+#cards_topLeft{
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.content_panel{
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+#card_selector{
+    flex-basis: 20%;
+    margin-bottom: 20px;
+}
+
+#card_summary{
+    flex-basis: 80%;
+}
+
+#card_input, #card_line, #cards_topLeft{
+    flex-basis: 60%;
+}
+
+#card_pie, #card_treemap, #card_bar{
+    margin-top: 20px;
+    flex-basis: 40%;
+}
+
+
+#content_left{
+    flex-basis: 20%;
+}
+
+#content_center{
+    flex-basis: 60%;
+    margin: 0 20px 0 20px;
+}
+
+#content_right{
+    flex-basis: 20%;
+}
