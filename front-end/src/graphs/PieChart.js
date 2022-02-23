@@ -7,11 +7,11 @@ import '../styles/graphs/PieChart.scss';
 
 class PieChart extends Component {
     componentDidMount() {
-        pieChart(this.props.data, this.props.id, colours_smooth)
+        pieChart(this.props.data, this.props.id, colours_smooth, this.props.width, this.props.height)
     }
 
     componentDidUpdate() {
-        pieChart(this.props.data, this.props.id, colours_smooth)
+        pieChart(this.props.data, this.props.id, colours_smooth, this.props.width, this.props.height)
     }
 
     render() {
@@ -21,6 +21,7 @@ class PieChart extends Component {
                 <p id="tooltip_pieChart_name"></p>
                 <p id="tooltip_pieChart_share"></p>
             </div>
+            <h2 className="cardTitle"> Sectors & Industries </h2>
         </div>
     }
 }
@@ -41,6 +42,8 @@ function pieChart(data, id, colours) {
             container_loading.removeChild(container_loading.lastChild);
         }
 
+        if (document.getElementById(`#${id}_svg`)) { document.getElementById(`#${id}_svg`).remove() }
+
         let dataset = JSON.parse(data).pieChart
 
         for (let i = 0; i < dataset.length; i++) {
@@ -53,12 +56,13 @@ function pieChart(data, id, colours) {
         const margin = { top: 20, right: 20, bottom: 20, left: 20, }
 
         const width = document.getElementById("card_pie").clientWidth - margin.left - margin.right
-        const height = document.getElementById("card_pie").clientHeight - margin.top - margin.bottom
-
+        const height = document.getElementById("card_pie").clientHeight - margin.top - margin.bottom - 48
+        
         const maxRadius = Math.min(width, height) / 2;
 
         let svg = d3.select(`#${id}`)
             .append("svg")
+            .attr("id", `#${id}_svg`)
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")

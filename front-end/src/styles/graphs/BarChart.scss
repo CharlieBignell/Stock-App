@@ -9,14 +9,13 @@
 
 .axisText{
     font-family: 'Baloo Thambi 2', sans-serif;
-    font-size: 185%;
+    font-size: 1vw;
     color: colours.$axisText;
     font-weight: 500;
 }
 
 .bar{
     stroke-width: 2px;
-    cursor: crosshair;
 }
 
 .tick > line {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { formatValue, getMovingAvgs, setRange } from '../utils.js';
+import { formatValue, getMovingAvgs, setRange, red, green, blue } from '../utils.js';
 
 import * as d3 from 'd3'
 
@@ -7,11 +7,11 @@ import '../styles/graphs/LineGraph.scss';
 
 class LineGraph extends Component {
     componentDidMount() {
-        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.lines, this.props.colours, this.props.dateRange)
+        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.lines, this.props.dateRange)
     }
 
     componentDidUpdate() {
-        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.lines, this.props.colours, this.props.dateRange)
+        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.lines, this.props.dateRange)
     }
 
     render() {
@@ -32,7 +32,7 @@ class LineGraph extends Component {
     }
 }
 
-function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
+function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
 
     // Add loading text
     let container_loading = document.getElementById("loading_lineGraph")
@@ -48,6 +48,8 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
             container_loading.removeChild(container_loading.lastChild);
         }
 
+        if (document.getElementById(`#${id}_svg`)) { document.getElementById(`#${id}_svg`).remove() }
+
         // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data).lineGraph
 
@@ -56,14 +58,17 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
 
         // Initialise dimensions
 
-        const margin = { top: 50, right: 50, bottom: 50, left: 90,}
+        const margin = { top: 50, right: 55, bottom: 50, left: 90}
         
-        const width = 1100 - margin.left - margin.right
-        const height = 550 - margin.top - margin.bottom
+        const width = document.getElementById("card_line").clientWidth - margin.left - margin.right
+        const height = document.getElementById("card_line").clientHeight - margin.top - margin.bottom - 8
+        console.log(width)
 
         // Date parsers - one for the axis and one for the tooltip
         let dateParser_axis = d3.timeParse("%Y-%m-%d")
         let dateParser_tooltip = d3.timeFormat("%B %-d %Y")
+
+        const colours = [red, green, blue]
 
         // For all, just show the year
         let dateFormat_axis = d3.timeFormat("%Y")
@@ -82,6 +87,7 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
         // Add the svg element to the container
         const svg = d3.select(`#${id}`)
             .append("svg")
+            .attr("id", `#${id}_svg`)
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
 
@@ -225,8 +231,8 @@ function lineGraph(data, id, movingAvgWin, lines, colours, dateRange = "a") {
             tooltip
                 .style("transform",
                     `translate(
-                    calc( -35% + ${xScale(closestXValue) + margin.left}px),
-                    calc(-40% + ${event.clientY}px))`)
+                    calc( 190% + ${mousePosition[0] + margin.left}px),
+                    calc( -40% + ${event.clientY}px))`)
                 .style("opacity", 1)
 
 

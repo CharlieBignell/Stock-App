@@ -3,7 +3,6 @@
 #main_header {
     background-color: colours.$primary_light;
     color: white;
-    // padding: 10px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -60,12 +59,6 @@
     transition: 0.5s;
 }
 
-h1 {
-    font-size: 2.5em;
-    font-weight: 500;
-    margin: 0 20px 0 10px;
-}
-
 #separator {
     border-left: 3px solid colours.$deselected;
     height: 30px;
@@ -81,12 +74,13 @@ h1 {
 
 #main_right>p {
     margin: 0;
-    line-height: 1.3em;
+    line-height: 1.1em;
 }
 
 #header_right_title {
-    color: white;
-    font-size: 1.1em;
+    color: #b4b4b4;
+    font-size: 1vw;
+    margin-top: 10px !important;
     cursor: default;
     height: min-content;
     text-align: right;
@@ -94,7 +88,7 @@ h1 {
 
 #TITM {
     color: white;
-    font-size: 1.4em;
+    font-size: 1.2vw;
     cursor: default;
     text-align: right;
 }

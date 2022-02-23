@@ -21,6 +21,8 @@ class TreeMap extends Component {
                 <p id="tooltip_treeMap_ticker"></p>
                 <p id="tooltip_treeMap_return"></p>
             </div>
+            <h2 className="cardTitle"> Portfolio Share and Performance </h2>
+
         </div>
     }
 }
@@ -41,14 +43,19 @@ function treeMap(data, id, colourScale, colourScale_text, dateRange = "a") {
             container_loading.removeChild(container_loading.lastChild);
         }
 
+        if (document.getElementById(`#${id}_svg`)) { document.getElementById(`#${id}_svg`).remove() }
+
         let dataset = JSON.parse(data).treeMap
 
-        var margin = { top: 7, right: 7, bottom: 7, left: 7 },
-            width = 1100 - margin.left - margin.right,
-            height = 360 - margin.top - margin.bottom;
+        const margin = { top: 20, right: 20, bottom: 12, left: 20 }
+
+        const width = document.getElementById("card_treemap").clientWidth - margin.left - margin.right
+        const height = document.getElementById("card_treemap").clientHeight - margin.top - margin.bottom - 48
+        console.log(width)
 
         var svg = d3.select(`#${id}`)
             .append("svg")
+            .attr("id", `#${id}_svg`)
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")

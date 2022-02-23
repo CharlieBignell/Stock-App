@@ -4,10 +4,19 @@
     background-color: colours.$primary_light;
     color: white;
     display: flex;
-    flex-flow: row nowrap;
-    border-radius: 12px;
+    flex-flow: column nowrap;
+    border-radius:5px;
     -webkit-box-shadow: 1px 0px 18px -2px colours.$shadow;
     box-shadow: 1px 0px 18px -2px colours.$shadow;
+}
+
+.cardTitle{
+    font-size: 1.4vw;
+    font-weight: 500;
+    padding-top: 10px;
+    margin:0 20px 0 20px ;
+    height: 30px;
+    text-align: left;
 }
 
 #cards_topLeft{

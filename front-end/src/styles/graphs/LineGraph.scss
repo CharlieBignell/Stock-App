@@ -8,7 +8,7 @@
 
 .axis_lineGraph {
     color: colours.$axisText;
-    font-size: 120%;
+    font-size: 1vw;
     font-family: "Baloo Thambi 2";
     font-weight: 500;
     margin-right: 3px;
@@ -50,15 +50,10 @@
 
 
 #tooltip_lineGraph {
-    width: 140px;
+    width: 145px;
 }
 
-.tooltip_date {
-    margin-bottom: 0.2em;
-    font-weight: 600;
-    font-size: 1.1em;
-    line-height: 1.4em;
-}
+
 
 .tooltip_items {
     text-align: left;

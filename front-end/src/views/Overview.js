@@ -1,22 +1,23 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 
-import { formatNav, red, green, blue } from '../utils.js';
+import { formatNav } from '../utils.js'
 
-import Header from "../components/Header";
-import LineGraph from "../graphs/LineGraph";
-import BarChart from "../graphs/BarChart";
-import TreeMap from "../graphs/TreeMap";
-import PieChart from "../graphs/PieChart";
-import Card from "../components/Card";
+import Header from "../components/Header"
+import LineGraph from "../graphs/LineGraph"
+import BarChart from "../graphs/BarChart"
+import TreeMap from "../graphs/TreeMap"
+import PieChart from "../graphs/PieChart"
+import Card from "../components/Card"
 
 class Overview extends Component {
 
     constructor(props) {
-        super(props);
+        super(props)
+
         this.state = {
             data: "NULL",
             dateRange: "a"
-        };
+        }
 
     }
 
@@ -26,9 +27,20 @@ class Overview extends Component {
             .then(res => this.setState({ data: res }));
     }
 
+    updateDimensions = () => {
+        this.setState(this.state)
+    };
+
     componentDidMount() {
         formatNav("item_overview", "2010-01-01")
         this.getData();
+        window.addEventListener('resize', this.updateDimensions);
+
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
+
     }
 
     render() {
@@ -42,12 +54,32 @@ class Overview extends Component {
                             <Card id="card_selector" />
                             <Card id="card_summary" />
                         </div>
-                        <Card id="card_bar" />
+                        <Card id="card_bar">
+                            <BarChart
+                                data={this.state.data}
+                                id="barChart"
+                                dateRange={this.state.dateRange}
+                            />
+                        </Card>
                     </div>
 
                     <div id="content_center" className="content_panel">
-                        <Card id="card_line" />
-                        <Card id="card_treemap" />
+                        <Card id="card_line">
+                            <LineGraph
+                                data={this.state.data}
+                                id="lineGraph"
+                                movingAvgWin={100}
+                                lines={["value", "amount_ITM", "amount_return_cum"]}
+                                dateRange={this.state.dateRange}
+                            />
+                        </Card>
+                        <Card id="card_treemap">
+                            <TreeMap
+                                data={this.state.data}
+                                id="treeMap"
+                                dateRange={this.state.dateRange}
+                            />
+                        </Card>
                     </div>
 
                     <div id="content_right" className="content_panel">
@@ -59,29 +91,6 @@ class Overview extends Component {
                             />
                         </Card>
                     </div>
-
-                    {/* <PieChart
-                        data={this.state.data}
-                        id="pieChart"
-                    />
-                    <TreeMap
-                        data={this.state.data}
-                        id="treeMap"
-                        dateRange={this.state.dateRange}
-                    />
-                    <LineGraph
-                        data={this.state.data}
-                        id="lineGraph"
-                        movingAvgWin={200}
-                        lines={["value", "amount_ITM", "amount_return_cum"]}
-                        colours={[blue, green, red]}
-                        dateRange={this.state.dateRange}
-                    />
-                    <BarChart
-                        data={this.state.data}
-                        id="barChart"
-                        dateRange={this.state.dateRange}
-                    /> */}
 
                 </div>
 

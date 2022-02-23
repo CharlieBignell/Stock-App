@@ -21,6 +21,7 @@ class BarChart extends Component {
                 <p id="tooltip_barChart_name"></p>
                 <p id="tooltip_barChart_return"></p>
             </div>
+            <h2 className="cardTitle"> Overall Market </h2>
         </div>
     }
 }
@@ -44,12 +45,14 @@ function barChart(data, id, dateRange = "a") {
         // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data).barChart
 
+        if (document.getElementById(`#${id}_svg`)) { document.getElementById(`#${id}_svg`).remove() }
+
         // TODO: add value - MWRR or TWRR
         let bars = [
             { name: "spy", displayName: "SPY" },
-            { name: "nasdaq", displayName: "NASDAQ" },
+            { name: "nasdaq", displayName: "NSDQ" },
             { name: "dow", displayName: "Dow" },
-            { name: "russell", displayName: "Russell 2k" }
+            { name: "russell", displayName: "R2k" }
             // { name: "ftse", displayName: "FTSE 100" }
         ]
 
@@ -63,13 +66,14 @@ function barChart(data, id, dateRange = "a") {
             minVal = Math.min(b.val, minVal)
         })
 
-        let margin = { top: 50, right: 50, bottom: 50, left: 80 }
-        let width = 460 - margin.left - margin.right
-        let height = 400 - margin.top - margin.bottom
+        let margin = { top: 30, right: 30, bottom: 40, left: 70 }
+        const width = document.getElementById("card_bar").clientWidth - margin.left - margin.right
+        const height = document.getElementById("card_bar").clientHeight - margin.top - margin.bottom - 48
 
         // Append the chart area
         let svg = d3.select(`#${id}`)
             .append("svg")
+            .attr("id", `#${id}_svg`)
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -98,7 +102,7 @@ function barChart(data, id, dateRange = "a") {
             .range([height, 0])
 
         let yAxis = d3.axisLeft(y)
-            .ticks(6)
+            .ticks(5)
             .tickSize(-width, 0, 0)
             .tickFormat((x) => `${x}%`)
             .tickPadding(12)

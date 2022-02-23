@@ -11,8 +11,22 @@ body {
 
 html, #root{
     height:100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
+.tooltip_date {
+    margin-bottom: 0.2em;
+    font-weight: 600;
+    font-size: 1.2em;
+    line-height: 1.4em;
+}
+
+h1 {
+    font-size: 2.5em;
+    font-weight: 500;
+    margin: 0 20px 0 10px;
+}
 
 #content{
     display: flex;
@@ -26,11 +40,6 @@ html, #root{
     display: flex;
     flex-flow: column nowrap;
 }
-
-#lineGraph, #barChart, #treeMap{
-    margin: 20px 0;
-}
-
 
 .tooltip{
     background-color: rgba(48, 48, 48, 0.4);
