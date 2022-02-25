@@ -106,16 +106,16 @@ export function formatValue(x) {
     x = Math.round(parseFloat(x))
 
     // Add prefix if negative
-    let prefix = ""
-    if (x < 0) {
-        prefix = "- "
-    }
+    let prefix = x < 0 ? "- " : ""
+
     x = Math.abs(x)
 
     let xLength = x.toString().length
     let format = `£${(x)}`
 
-    if (xLength >= 4 && xLength <= 6) {
+    if (xLength == 4) {
+        format = `${prefix}£${(x / 1000).toFixed(1)}k`
+    } else if (xLength > 4 && xLength <= 6) {
         format = `${prefix}£${(x / 1000).toFixed(0)}k`
     } else if (xLength > 6) {
         format = `${prefix}£${(x / 1000000).toFixed(0)}M`

@@ -4,35 +4,73 @@ import { formatValue, getMovingAvgs, setRange, red, green, blue } from '../utils
 import * as d3 from 'd3'
 
 import '../styles/graphs/LineGraph.scss';
+import MultiToggle from "react-multi-toggle";
+
+const view = [
+    {
+        displayName: 'Portfolio',
+        value: 'p'
+    },
+    {
+        displayName: 'Market',
+        value: "m"
+    }
+];
 
 class LineGraph extends Component {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            view: "p",
+        }
+
+    }
+
+    onViewSelect = value => this.setState({ view: value });
+
     componentDidMount() {
-        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.lines, this.props.dateRange)
+        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.dateRange, this.state.view)
     }
 
     componentDidUpdate() {
-        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.lines, this.props.dateRange)
+        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.dateRange, this.state.view)
     }
 
     render() {
         return <div id={this.props.id} className="card_inner">
+            <div id="lineGraphHeader">
+                <p>Legend</p>
+                <p>MA dropdown</p>
+                <MultiToggle
+                    options={view}
+                    selectedOption={this.state.view}
+                    onSelectOption={this.onViewSelect}
+                />
+            </div>
+
             <div id="loading_lineGraph" className="loadingDiv"></div>
             <div className="tooltip" id="tooltip_lineGraph">
                 <div className="tooltip_date">
                     <span id="date"></span>
                 </div>
-                <div className="tooltip_items">
+                <div id="portfolio_items">
                     <div className="tooltip_item"><p id="amount_ITM_name">In the Market</p><span id="amount_ITM_val"></span></div>
                     <div className="tooltip_item"><p id="amount_return_cum_name">Return</p><span id="amount_return_cum_val"></span></div>
                     <hr></hr>
                     <div className="tooltip_item"><p id="value_name">Value</p><span id="value_val"></span></div>
+                </div>
+                <div id="market_items">
+                    <div className="tooltip_item"><p id="spy_name">SPY</p><span id="spy_val"></span></div>
+                    <div className="tooltip_item"><p id="russell_name">Russell 2k</p><span id="russell_val"></span></div>
                 </div>
             </div>
         </div>
     }
 }
 
-function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
+function lineGraph(data, id, movingAvgWin, dateRange, view) {
 
     // Add loading text
     let container_loading = document.getElementById("loading_lineGraph")
@@ -53,17 +91,23 @@ function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
 
         // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data).lineGraph
+        let lines = []
+
+        if (view == "m") {
+            lines = ["spy", "russell"]
+        } else {
+            lines = ["value", "amount_ITM", "amount_return_cum"]
+        }
 
         dataset = setRange(dataset, dateRange)
         dataset = getMovingAvgs(dataset, lines, movingAvgWin)
 
         // Initialise dimensions
 
-        const margin = { top: 50, right: 55, bottom: 50, left: 90 }
+        const margin = { top: 10, right: 55, bottom: 50, left: 90 }
 
         const width = document.getElementById("card_line").clientWidth - margin.left - margin.right
-        const height = document.getElementById("card_line").clientHeight - margin.top - margin.bottom - 8
-        console.log(width)
+        const height = document.getElementById("card_line").clientHeight - margin.top - margin.bottom - 88
 
         // Date parsers - one for the axis and one for the tooltip
         let dateParser_axis = d3.timeParse("%Y-%m-%d")
@@ -133,7 +177,7 @@ function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
 
         const yAxisGenerator = d3.axisLeft()
             .scale(yScale)
-            .ticks(7)
+            .ticks(5)
             .tickSize(-width, 0, 0)
             .tickFormat((x) => formatValue(x))
             .tickPadding(10)
@@ -209,6 +253,12 @@ function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
             const closestDataPoint = dataset[closestIndex]
             const closestXValue = xAccessor(closestDataPoint)
 
+            document.getElementById("market_items").style.display = "none"
+            document.getElementById("portfolio_items").style.display = "none"
+
+            const items_id = view == "m" ? "market_items" : "portfolio_items"
+            document.getElementById(items_id).style.display = "flex"
+
             // Update the tooltip for each line
             yAccessors.forEach(function (a, i) {
                 // Get the closest point
@@ -232,8 +282,8 @@ function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
             tooltip
                 .style("transform",
                     `translate(
-                    calc( 190% + ${mousePosition[0] + margin.left}px),
-                    calc( -40% + ${event.clientY}px))`)
+                    calc(-50% + ${event.x}px),
+                    calc(-100% + ${event.y}px))`)
                 .style("opacity", 1)
 
 

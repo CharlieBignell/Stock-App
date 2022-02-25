@@ -38,7 +38,7 @@
 
 .listeningRect_lineGraph {
     fill: transparent;
-    cursor: none;
+    // cursor: none;
 }
 
 .tooltip_line {
@@ -54,10 +54,9 @@
 }
 
 
-
-.tooltip_items {
+#portfolio_items, #market_items {
     text-align: left;
-    display: flex;
+    display: none;
     flex-flow: column nowrap;
 }
 
@@ -65,7 +64,7 @@
     margin: 0;
 }
 
-#amount_ITM_name {
+#amount_ITM_name, #russell_name {
     color: colours.$green;
 }
 
@@ -73,7 +72,7 @@
     color: colours.$blue;
 }
 
-#amount_return_cum_name {
+#amount_return_cum_name, #spy_name {
     color: colours.$red;
 }
 
@@ -84,6 +83,7 @@
     color: white;
     font-weight: 500;
 }
+
 
 .tooltip_item {
     display: flex;
@@ -99,3 +99,17 @@ hr {
     margin: 2px 0 2px 0;
 }
 
+#lineGraphHeader{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    height:80px;
+}
+
+#lineGraphHeader > *{
+    flex-basis: 33%;
+}
+
+#lineGraphHeader :nth-child(3){
+    flex-basis: 20% !important;
+}

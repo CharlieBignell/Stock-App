@@ -2,6 +2,7 @@
 
 .toggle-wrapper {
     margin: 20px;
+    width: -webkit-fill-available;
 }
 
 .toggleContainer {
@@ -12,7 +13,6 @@
     box-shadow: inset 0px 0px 8px 1px colours.$shadow;
     display: flex;
     align-items: center;
-    // height: 10px;
 }
 
 .toggleContainer .toggleOption {

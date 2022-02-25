@@ -8,7 +8,6 @@ import BarChart from "../graphs/BarChart"
 import TreeMap from "../graphs/TreeMap"
 import PieChart from "../graphs/PieChart"
 import Card from "../components/Card"
-import Selector from "../components/Selector"
 
 import MultiToggle from "react-multi-toggle";
 import '../styles/components/Toggle.scss';
@@ -100,7 +99,6 @@ class Overview extends Component {
                                 data={this.state.data}
                                 id="lineGraph"
                                 movingAvgWin={100}
-                                lines={["value", "amount_ITM", "amount_return_cum"]}
                                 dateRange={this.state.dateRange}
                             />
                         </Card>

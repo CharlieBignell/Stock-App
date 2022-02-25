@@ -7,6 +7,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background-color: colours.$primary_dark;
     height: 100%;
+    user-select: none;
+
 }
 
 html, #root{
@@ -25,7 +27,7 @@ html, #root{
 h1 {
     font-size: 2.5em;
     font-weight: 500;
-    margin: 0 20px 0 10px;
+    margin: 0 20px 0 20px;
 }
 
 #content{
