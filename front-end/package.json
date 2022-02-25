@@ -12,6 +12,7 @@
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-multi-toggle": "^1.1.0",
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
     "react-script-tag": "^1.1.2",

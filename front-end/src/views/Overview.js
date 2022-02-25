@@ -8,6 +8,29 @@ import BarChart from "../graphs/BarChart"
 import TreeMap from "../graphs/TreeMap"
 import PieChart from "../graphs/PieChart"
 import Card from "../components/Card"
+import Selector from "../components/Selector"
+
+import MultiToggle from "react-multi-toggle";
+import '../styles/components/Toggle.scss';
+
+const time = [
+    {
+        displayName: 'Week',
+        value: 'w'
+    },
+    {
+        displayName: 'Month',
+        value: "m"
+    },
+    {
+        displayName: 'Year',
+        value: "y"
+    },
+    {
+        displayName: 'All',
+        value: "a"
+    }
+];
 
 class Overview extends Component {
 
@@ -16,10 +39,12 @@ class Overview extends Component {
 
         this.state = {
             data: "NULL",
-            dateRange: "a"
+            dateRange: "a",
         }
 
     }
+
+    onTimeSelect = value => this.setState({ dateRange: value });
 
     getData() {
         fetch("http://localhost:9000/overview")
@@ -51,7 +76,13 @@ class Overview extends Component {
 
                     <div id="content_left" className="content_panel">
                         <div id="cards_topLeft">
-                            <Card id="card_selector" />
+                            <Card id="card_selector">
+                                <MultiToggle
+                                    options={time}
+                                    selectedOption={this.state.dateRange}
+                                    onSelectOption={this.onTimeSelect}
+                                />
+                            </Card>
                             <Card id="card_summary" />
                         </div>
                         <Card id="card_bar">

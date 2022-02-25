@@ -1,0 +1,52 @@
+@use '../colours';
+
+.toggle-wrapper {
+    margin: 20px;
+}
+
+.toggleContainer {
+    position: relative;
+    border-radius: 20px;
+    background-color: colours.$primary_dark;
+    -webkit-box-shadow: inset 0px 0px 8px 1px colours.$shadow;
+    box-shadow: inset 0px 0px 8px 1px colours.$shadow;
+    display: flex;
+    align-items: center;
+    // height: 10px;
+}
+
+.toggleContainer .toggleOption {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+.toggleContainer .toggleOption.selected {
+    cursor: default;
+}
+
+.toggleOption {
+    font-size: 1vw;
+    font-weight: 500;
+}
+
+.toggleContainer .toggle {
+    position: absolute;
+    height: 100%;
+    bottom: 0;
+    transition: all 0.2s ease-in-out;
+    background: rgb(117, 87, 181);
+    background: linear-gradient(140deg, rgba(117, 87, 181, 1) 0%, rgba(47, 119, 158, 1) 100%);
+    border-radius: 18px;
+    -webkit-box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.2);
+    // border: 3px solid colours.$primary_dark;
+}
+
+.optionDisabled {
+    background: #e6e6e6;
+    cursor: no-drop !important;
+}
