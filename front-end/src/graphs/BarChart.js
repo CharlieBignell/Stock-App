@@ -15,13 +15,13 @@ class BarChart extends Component {
     }
 
     render() {
-        return <div id={this.props.id}>
-            <div id="loading_barChart"></div>
+        return <div id={this.props.id} className="card_inner">
+            <div id="loading_barChart" className="loadingDiv"></div>
             <div id="tooltip_barChart" className="tooltip">
                 <p id="tooltip_barChart_name"></p>
                 <p id="tooltip_barChart_return"></p>
             </div>
-            <h2 className="cardTitle"> Overall Market </h2>
+            <h2 className="cardTitle" id="title_barChart"> Overall Market </h2>
         </div>
     }
 }
@@ -44,8 +44,11 @@ function barChart(data, id, dateRange = "a") {
 
         // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data).barChart
+        container_loading.style.height = 0;
 
         if (document.getElementById(`#${id}_svg`)) { document.getElementById(`#${id}_svg`).remove() }
+
+        document.getElementById("title_barChart").style.display = "block"
 
         // TODO: add value - MWRR or TWRR
         let bars = [
@@ -66,7 +69,7 @@ function barChart(data, id, dateRange = "a") {
             minVal = Math.min(b.val, minVal)
         })
 
-        let margin = { top: 30, right: 30, bottom: 40, left: 70 }
+        let margin = { top: 30, right: 30, bottom: 40, left: 80 }
         const width = document.getElementById("card_bar").clientWidth - margin.left - margin.right
         const height = document.getElementById("card_bar").clientHeight - margin.top - margin.bottom - 48
 
@@ -157,7 +160,7 @@ function barChart(data, id, dateRange = "a") {
             tooltip
                 .select("#tooltip_barChart_name")
                 .text(d.displayName)
-            
+
             tooltip
                 .select("#tooltip_barChart_return")
                 .text(d.val + "%")

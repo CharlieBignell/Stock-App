@@ -15,13 +15,13 @@ class PieChart extends Component {
     }
 
     render() {
-        return <div id={this.props.id}>
-            <div id="loading_pieChart"></div>
+        return <div id={this.props.id} className="card_inner">
+            <div id="loading_pieChart" className="loadingDiv"></div>
             <div id="tooltip_pieChart" className="tooltip">
                 <p id="tooltip_pieChart_name"></p>
                 <p id="tooltip_pieChart_share"></p>
             </div>
-            <h2 className="cardTitle"> Sectors & Industries </h2>
+            <h2 className="cardTitle" id="title_pieChart"> Sectors & Industries </h2>
         </div>
     }
 }
@@ -41,8 +41,11 @@ function pieChart(data, id, colours) {
         while (container_loading.firstChild) {
             container_loading.removeChild(container_loading.lastChild);
         }
+        container_loading.style.height = 0;
 
         if (document.getElementById(`#${id}_svg`)) { document.getElementById(`#${id}_svg`).remove() }
+
+        document.getElementById("title_pieChart").style.display = "block"
 
         let dataset = JSON.parse(data).pieChart
 
@@ -57,7 +60,7 @@ function pieChart(data, id, colours) {
 
         const width = document.getElementById("card_pie").clientWidth - margin.left - margin.right
         const height = document.getElementById("card_pie").clientHeight - margin.top - margin.bottom - 48
-        
+
         const maxRadius = Math.min(width, height) / 2;
 
         let svg = d3.select(`#${id}`)

@@ -15,8 +15,8 @@ class LineGraph extends Component {
     }
 
     render() {
-        return <div id={this.props.id}>
-            <div id="loading_lineGraph"></div>
+        return <div id={this.props.id} className="card_inner">
+            <div id="loading_lineGraph" className="loadingDiv"></div>
             <div className="tooltip" id="tooltip_lineGraph">
                 <div className="tooltip_date">
                     <span id="date"></span>
@@ -47,6 +47,7 @@ function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
         while (container_loading.firstChild) {
             container_loading.removeChild(container_loading.lastChild);
         }
+        container_loading.style.height = 0;
 
         if (document.getElementById(`#${id}_svg`)) { document.getElementById(`#${id}_svg`).remove() }
 
@@ -58,8 +59,8 @@ function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
 
         // Initialise dimensions
 
-        const margin = { top: 50, right: 55, bottom: 50, left: 90}
-        
+        const margin = { top: 50, right: 55, bottom: 50, left: 90 }
+
         const width = document.getElementById("card_line").clientWidth - margin.left - margin.right
         const height = document.getElementById("card_line").clientHeight - margin.top - margin.bottom - 8
         console.log(width)
@@ -194,7 +195,7 @@ function lineGraph(data, id, movingAvgWin, lines, dateRange = "a") {
                 .attr("id", `${l}_circ`)
                 .attr("fill", colours[i])
                 .attr("r", 5)
-        
+
         })
 
         function onMouseMove(event) {

@@ -15,8 +15,8 @@ class SimpleLine extends Component {
     }
 
     render() {
-        return <div id={this.props.id}>
-            <div id="loading_simpleLine"></div>
+        return <div id={this.props.id} className="card_inner">
+            <div id="loading_simpleLine" className="loadingDiv"></div>
         </div>
     }
 }
@@ -39,6 +39,7 @@ function simpleLine(data, id, movingAvgWin, dateRange = "a", subject = "all") {
 
         // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data).simpleLine
+        container_loading.style.height = 0;
 
         data = []
 
@@ -114,7 +115,7 @@ function simpleLine(data, id, movingAvgWin, dateRange = "a", subject = "all") {
             // .attr("class", "area")
             .attr("stroke", colour)
             .attr("d", line);
-            
+
     }
 
 }

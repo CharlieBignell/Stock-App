@@ -16,8 +16,8 @@ class AreaGraph extends Component {
     }
 
     render() {
-        return <div id={this.props.id}>
-            <div id="loading_areaGraph"></div>
+        return <div id={this.props.id} className="card_inner">
+            <div id="loading_areaGraph" className="loadingDiv"></div>
 
             <div id="tooltip_areaGraph" className="tooltip">
                 <div className="tooltip_date">
@@ -28,6 +28,8 @@ class AreaGraph extends Component {
                 </div>
 
             </div>
+            <h2 className="cardTitle" id="title_areaGraph">Portfolio Share</h2>
+
         </div>
     }
 }
@@ -49,6 +51,9 @@ function areaGraph(data, id) {
         }
 
         let dataset = JSON.parse(data).areaGraph
+        container_loading.style.height = 0;
+
+        document.getElementById("title_areaGraph").style.display = "block"
 
         const margin = { top: 50, right: 50, bottom: 50, left: 90 }
         const width = 1000 - margin.left - margin.right

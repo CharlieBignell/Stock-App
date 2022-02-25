@@ -17,6 +17,7 @@
     margin:0 20px 0 20px ;
     height: 30px;
     text-align: left;
+    display: none;
 }
 
 #cards_topLeft{
@@ -59,4 +60,36 @@
 
 #content_right{
     flex-basis: 20%;
+}
+
+.card_inner{
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+}
+
+.loadingDiv > p{
+    margin:0;
+    text-align: center;
+}
+
+.loadingDiv{
+    border-radius:5px;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    background-image: linear-gradient(
+        90deg,
+        colours.$primary_light 0%, colours.$primary_light 40%,
+        colours.$gridline 50%, colours.$gridline 55%,
+        colours.$primary_light 65%, colours.$primary_light 100%
+    );
+    background-size: 300%;
+    animation: shimmer 1750ms infinite;
+}
+
+@keyframes shimmer{
+    from {background-position: 100% 100%;}
+    to {background-position: 0 0;}
 }
