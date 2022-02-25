@@ -9,8 +9,8 @@
     position: relative;
     border-radius: 20px;
     background-color: colours.$primary_dark;
-    -webkit-box-shadow: inset 0px 0px 8px 1px colours.$shadow;
-    box-shadow: inset 0px 0px 8px 1px colours.$shadow;
+    -webkit-box-shadow: inset 0px 0px 7px 0px colours.$shadow;
+    box-shadow: inset 0px 0px 7px 0px colours.$shadow;
     display: flex;
     align-items: center;
 }
@@ -26,11 +26,14 @@
 
 .toggleContainer .toggleOption.selected {
     cursor: default;
+    color: white;
 }
 
 .toggleOption {
     font-size: 1vw;
     font-weight: 500;
+    color: colours.$deselected;
+    transition: all 0.4s ease;
 }
 
 .toggleContainer .toggle {

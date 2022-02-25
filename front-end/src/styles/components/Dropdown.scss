@@ -1,0 +1,126 @@
+@use '../colours';
+
+
+.dropdown_background{
+    padding: 2px;
+    background-color: colours.$blue;
+    border-radius: 12px;
+    background: rgb(117, 87, 181);
+    background: linear-gradient(140deg, rgba(117, 87, 181, 1) 0%, rgba(47, 119, 158, 1) 100%);
+}
+
+// container div
+.rdn {
+    position: relative;
+    margin: 20px;
+}
+
+// main box
+.rdn-control {
+    position: relative;
+    overflow: hidden;
+    background-color: colours.$primary_dark;
+    box-sizing: border-box;
+    color: #333;
+    cursor: default;
+    outline: none;
+    padding: 5px 52px 5px 15px;
+    // transition: all 200ms ease;
+    color:white;
+    width: 9vw;
+    border-radius: 11px;
+    font-size: 0.9vw;
+    height: inherit;
+    -webkit-box-shadow: 1px 0px 18px -4px colours.$shadow;
+    box-shadow: 1px 0px 18px -4px colours.$shadow;
+}
+
+// Main box hover
+.rdn-control:hover {
+    cursor: pointer;
+}
+
+// Icon
+.rdn-control-arrow-icon {
+    border-color: white transparent transparent;
+    border-style: solid;
+    border-width: 5px 5px 0;
+    content: ' ';
+    display: block;
+    height: 0;
+    margin-top: -ceil(2.5);
+    position: absolute;
+    right: 15px;
+    top: 18px;
+    width: 0;
+}
+
+// Icon when open
+.rdn-control-arrow-icon.is-open {
+    border-color: transparent transparent white;
+    border-width: 0 5px 5px;
+}
+
+// Overall selection box
+.rdn-drop,
+.rdn-selection {
+    background-color: colours.$primary_dark;
+    -webkit-box-shadow: 1px 0px 18px -4px colours.$shadow;
+    box-shadow: 1px 0px 18px -4px colours.$shadow;
+    border: 1px solid colours.$gridline;
+    margin-top: 5px;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 1000;
+    // -webkit-overflow-scrolling: touch;
+    border-radius: 0 0 11px 11px;
+    // background-color: orange;
+}
+
+// Non-selected option in dropdown list
+.rdn-drop-menu-option,
+.rdn-drop-menu-group-option,
+.rdn-selection-menu-option,
+.rdn-selection-menu-group-option {
+    box-sizing: border-box;
+    color: colours.$deselected;
+    cursor: pointer;
+    display: block;
+    padding: 8px 10px;
+}
+
+// Hovering over non-selected options
+.rdn-drop-menu-option:hover,
+.rdn-drop-menu-group-option:hover,
+.rdn-selection-menu-option:hover,
+.rdn-selection-menu-group-option:hover {
+    background-color: #363a3d;
+    transition: all 200ms ease;
+    color: white
+}
+
+// Selected option in dropdown list
+.rdn-drop-menu-option.is-selected,
+.rdn-drop-menu-group-option.is-selected,
+.rdn-selection-menu-option.is-selected,
+.rdn-selection-menu-group-option.is-selected {
+    background-color: #414346;
+    color: white;
+    cursor: default;
+}
+
+
+// .rdn-selection {
+//     position: relative;
+//     z-index: auto;
+// }
+
+// .rdn-control-icon {
+//     display: block;
+//     height: 0;
+//     margin-top: -6px;
+//     position: absolute;
+//     right: 10px;
+//     top: 14px;
+// }

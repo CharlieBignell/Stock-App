@@ -11,6 +11,7 @@ import Card from "../components/Card"
 
 import MultiToggle from "react-multi-toggle";
 import '../styles/components/Toggle.scss';
+import '../styles/components/Dropdown.scss';
 
 const time = [
     {

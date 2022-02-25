@@ -6,6 +6,8 @@ import * as d3 from 'd3'
 import '../styles/graphs/LineGraph.scss';
 import MultiToggle from "react-multi-toggle";
 
+import { Dropdown } from 'react-dropdown-now';
+
 const view = [
     {
         displayName: 'Portfolio',
@@ -17,6 +19,33 @@ const view = [
     }
 ];
 
+const movingAvg = [
+    {
+        displayName: 'None',
+        value: 1
+    },
+    {
+        displayName: '7 Day MA',
+        value: 7
+    },
+    {
+        displayName: '30 Day MA',
+        value: 30
+    },
+    {
+        displayName: '90 Day MA',
+        value: 90
+    },
+    {
+        displayName: '200 Day MA',
+        value: 200
+    },
+    {
+        displayName: '400 Day MA',
+        value: 400
+    }
+];
+
 class LineGraph extends Component {
 
     constructor(props) {
@@ -24,25 +53,39 @@ class LineGraph extends Component {
 
         this.state = {
             view: "p",
+            movingAvgWin: 1
         }
 
     }
 
-    onViewSelect = value => this.setState({ view: value });
-
+    onViewSelect = (value) => this.setState({ view: value })
+    
+    onMASelect = (value) =>this.setState({ movingAvgWin: movingAvg.find(x => x.displayName === value.label).value })
+         
     componentDidMount() {
-        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.dateRange, this.state.view)
+        formatDropdown()
+        lineGraph(this.props.data, this.props.id, this.state.movingAvgWin, this.props.dateRange, this.state.view)
     }
 
     componentDidUpdate() {
-        lineGraph(this.props.data, this.props.id, this.props.movingAvgWin, this.props.dateRange, this.state.view)
+        formatDropdown()
+        lineGraph(this.props.data, this.props.id, this.state.movingAvgWin, this.props.dateRange, this.state.view)
     }
 
     render() {
         return <div id={this.props.id} className="card_inner">
             <div id="lineGraphHeader">
-                <p>Legend</p>
-                <p>MA dropdown</p>
+                <p></p>
+
+                <Dropdown
+                    placeholder="Moving Avg."
+                    options={['None', '7 Day MA', '30 Day MA', '90 Day MA', '200 Day MA', '400 Day MA']}
+                    value="Moving Avg"
+                    onChange={this.onMASelect}
+                    onClose={() => dropdownCornersToggle("close")}
+                    onOpen={() => dropdownCornersToggle("open")}
+                />
+
                 <MultiToggle
                     options={view}
                     selectedOption={this.state.view}
@@ -68,6 +111,38 @@ class LineGraph extends Component {
             </div>
         </div>
     }
+}
+
+function dropdownCornersToggle(toggle) {
+
+    let dropdownBackground = document.getElementsByClassName("dropdown_background")[0]
+    let dropdownContainer = dropdownBackground.firstChild
+
+    if (toggle === "close") {
+        dropdownContainer.style.borderRadius = "11px"
+        dropdownBackground.style.borderRadius = "12px"
+    } else {
+        dropdownContainer.style.borderRadius = "11px 11px 0 0"
+        dropdownBackground.style.borderRadius = "12px 12px 0 0"
+    }
+}
+
+function formatDropdown() {
+    let dropdownRoot = document.getElementsByClassName("rdn")[0]
+    let dropdowChild = dropdownRoot.firstChild
+
+    if (dropdowChild.className != "dropdown_background") {
+        while (dropdownRoot.firstChild) {
+            dropdownRoot.removeChild(dropdownRoot.lastChild);
+        }
+        let div = document.createElement("div")
+        div.className = "dropdown_background"
+
+        div.appendChild(dropdowChild)
+        dropdownRoot.appendChild(div)
+    }
+
+
 }
 
 function lineGraph(data, id, movingAvgWin, dateRange, view) {
