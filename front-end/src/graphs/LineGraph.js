@@ -200,6 +200,8 @@ function lineGraph(data, id, movingAvgWin, dateRange, view) {
     // If we have the data, draw the graph
     if (data !== "NULL") {
 
+        document.getElementById("lineGraphHeader").style.display = "flex"
+
         // Clear the loading text
         while (container_loading.firstChild) {
             container_loading.removeChild(container_loading.lastChild);
