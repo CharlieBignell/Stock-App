@@ -59,38 +59,74 @@ class LineGraph extends Component {
     }
 
     onViewSelect = (value) => this.setState({ view: value })
-    
-    onMASelect = (value) =>this.setState({ movingAvgWin: movingAvg.find(x => x.displayName === value.label).value })
-         
+
+    onMASelect = (value) => this.setState({ movingAvgWin: movingAvg.find(x => x.displayName === value.label).value })
+
     componentDidMount() {
         formatDropdown()
+        setLegend(this.state.view)
         lineGraph(this.props.data, this.props.id, this.state.movingAvgWin, this.props.dateRange, this.state.view)
     }
 
     componentDidUpdate() {
         formatDropdown()
+        setLegend(this.state.view)
         lineGraph(this.props.data, this.props.id, this.state.movingAvgWin, this.props.dateRange, this.state.view)
     }
 
     render() {
         return <div id={this.props.id} className="card_inner">
             <div id="lineGraphHeader">
-                <p></p>
 
-                <Dropdown
-                    placeholder="Moving Avg."
-                    options={['None', '7 Day MA', '30 Day MA', '90 Day MA', '200 Day MA', '400 Day MA']}
-                    value="Moving Avg"
-                    onChange={this.onMASelect}
-                    onClose={() => dropdownCornersToggle("close")}
-                    onOpen={() => dropdownCornersToggle("open")}
-                />
+                <div id="lineGraphHeader_legend">
+                    <div className="legend active" id="legend_port">
+                        <div className="legendItem">
+                            <div className="legendMarker itm"></div>
+                            <p>In the Market</p>
+                        </div>
+                        <div className="legendItem">
+                            <div className="legendMarker return"></div>
+                            <p>Return</p>
+                        </div>
+                        <div className="legendItem">
+                            <div className="legendMarker value"></div>
+                            <p>Value</p>
+                        </div>
+                    </div>
 
-                <MultiToggle
-                    options={view}
-                    selectedOption={this.state.view}
-                    onSelectOption={this.onViewSelect}
-                />
+                    <div className="legend" id="legend_mark">
+                        <div className="legendItem">
+                            <div className="legendMarker spy"></div>
+                            <p>S&P 500</p>
+                        </div>
+                        <div className="legendItem">
+                            <div className="legendMarker r2k"></div>
+                            <p>Russell 2K</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="lineGraphHeader_right">
+                    <div id="lineGraphHeader_dropdown">
+                        <Dropdown
+                            placeholder="Moving Avg."
+                            options={['None', '7 Day MA', '30 Day MA', '90 Day MA', '200 Day MA', '400 Day MA']}
+                            value="Moving Avg"
+                            onChange={this.onMASelect}
+                            onClose={() => dropdownCornersToggle("close")}
+                            onOpen={() => dropdownCornersToggle("open")}
+                        />
+                    </div>
+
+                    <div id="lineGraphHeader_toggle">
+                        <MultiToggle
+                            options={view}
+                            selectedOption={this.state.view}
+                            onSelectOption={this.onViewSelect}
+                        />
+                    </div>
+                </div>
+
+
             </div>
 
             <div id="loading_lineGraph" className="loadingDiv"></div>
@@ -141,8 +177,16 @@ function formatDropdown() {
         div.appendChild(dropdowChild)
         dropdownRoot.appendChild(div)
     }
+}
 
-
+function setLegend(choice) {
+    if (choice == "p") {
+        document.getElementById("legend_mark").classList.remove("active")
+        document.getElementById("legend_port").classList.add("active")
+    } else {
+        document.getElementById("legend_port").classList.remove("active")
+        document.getElementById("legend_mark").classList.add("active")
+    }
 }
 
 function lineGraph(data, id, movingAvgWin, dateRange, view) {

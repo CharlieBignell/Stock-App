@@ -99,6 +99,8 @@ hr {
     margin: 2px 0 2px 0;
 }
 
+// Header stuff
+
 #lineGraphHeader{
     display: flex;
     flex-flow: row nowrap;
@@ -107,6 +109,78 @@ hr {
 }
 
 
-#lineGraphHeader :nth-child(3){
-    flex-basis: 20% !important;
+#lineGraphHeader_legend{
+    margin: 0 20px 0 30px;
+    align-self: center;
+}
+
+#lineGraphHeader_dropdown{
+    align-self: center;
+}
+
+#lineGraphHeader_toggle{
+    margin: 0 20px 0 20px;
+    width: 270px;
+}
+
+.legend{
+    display: none;
+    align-items: center;
+}
+
+.legend.active{
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.legendItem{
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.legendItem >p{
+    margin:0;
+    font-size: 1vw;
+}
+
+.legendMarker{
+    width: 9px;
+    height: 9px;
+    margin-right: 10px;
+    align-self: center;
+    border-radius: 11px;
+    border: 2px solid white;
+}
+
+#legend_port :nth-child(2).legendItem{
+    margin: 0 20px 0 20px;
+}
+
+#legend_mark :nth-child(1).legendItem{
+    margin-right: 20px;
+}
+
+.legendMarker.value{
+    background-color: colours.$blue;
+}
+
+.legendMarker.itm{
+    background-color: colours.$green;
+}
+
+.legendMarker.return{
+    background-color: colours.$red;
+}
+
+.legendMarker.spy{
+    background-color: colours.$red;
+}
+
+.legendMarker.r2k{
+    background-color: colours.$green;
+}
+
+#lineGraphHeader_right{
+    display: flex;
+    flex-flow: row nowrap;
 }
