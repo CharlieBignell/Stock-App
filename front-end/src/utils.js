@@ -1,20 +1,31 @@
 import moment from 'moment';
 
-export let red = "#e78380"
-export let blue = "#5891e0"
-export let green = "#60b35d"
+// line graph
+export let red = "#d37d7a"
+export let green = "#6ec76b"
+export let blue = "#59ade6"
+
 export let yellow = "#e6e675"
 export let purple = "#bd63eb"
 export let orange = "#eda961"
 export let turquoise = "#5bd4ba"
 export let grey = "#bfbfbf"
 
+// bar chart
 export let colours_core = [red, blue, green, yellow, purple, orange]
-export let colours_smooth = [blue, turquoise, green, yellow, orange, red, purple]
 
-export let colourScale = ["#c94747", "#ed8585", "#c9c9c9", "#8fde85", "#55bf47"]
+// pie chart and area chart
+export let colours_smooth = [blue, turquoise, green, yellow, orange, red, purple, blue, turquoise, green, yellow, orange, red, purple]
 
-export let colourScale_text = ["#611818", "#8f3232", "#575757", "#326625", "#254f1a"]
+// Line graph
+let strong_negative = [red, "#611818"]
+let weak_negative = ["#e6a3a1", "#8f3232"]
+let neutral = ["#c9c9c9", "#575757"]
+let weak_positive = ["#a8e6a1", "#326625"]
+let strong_positive = [green, "#254f1a"]
+
+export let colourScale = [strong_negative[0], weak_negative[0], neutral[0], weak_positive[0], strong_positive[0]]
+export let colourScale_text = [strong_negative[1], weak_negative[1], neutral[1], weak_positive[1], strong_positive[1]]
 
 // Change the active nav item
 export function formatNav(target, date) {

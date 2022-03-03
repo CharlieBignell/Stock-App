@@ -7,11 +7,11 @@ import '../styles/graphs/TreeMap.scss';
 
 class TreeMap extends Component {
     componentDidMount() {
-        treeMap(this.props.data, this.props.id, colourScale, colourScale_text, this.props.dateRange)
+        treeMap(this.props.data, this.props.id, this.props.dateRange)
     }
 
     componentDidUpdate() {
-        treeMap(this.props.data, this.props.id, colourScale, colourScale_text, this.props.dateRange)
+        treeMap(this.props.data, this.props.id, this.props.dateRange)
     }
 
     render() {
@@ -27,7 +27,7 @@ class TreeMap extends Component {
     }
 }
 
-function treeMap(data, id, colourScale, colourScale_text, dateRange = "a") {
+function treeMap(data, id, dateRange = "a") {
 
     // Add loading text
     let container_loading = document.getElementById("loading_treeMap")

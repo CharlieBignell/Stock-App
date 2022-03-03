@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import { colours_smooth } from '../utils.js'
 
 import * as d3 from 'd3'
-import { timeDay } from 'd3-time'
 
 import '../styles/graphs/AreaGraph.scss'
 
