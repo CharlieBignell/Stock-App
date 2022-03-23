@@ -9,7 +9,8 @@ router.get('/', function (req, res, next) {
     stocks = []
     daily = []
     daily_stocks = []
-
+    summary = []
+    
     fs.createReadStream('../data/outputs/stocks.csv')
         .pipe(csv())
         .on('data', (row) => {
@@ -28,15 +29,23 @@ router.get('/', function (req, res, next) {
                             daily_stocks.push(row)
                         })
                         .on('end', () => {
+                            fs.createReadStream('../data/outputs/summary.csv')
+                                .pipe(csv())
+                                .on('data', (row) => {
+                                    summary.push(row)
+                                })
+                                .on('end', () => {
 
-                            res.send(
-                                {
-                                    lineGraph: getData_lineGraph(),
-                                    treeMap: getData_treeMap(),
-                                    barChart: getData_barChart(),
-                                    pieChart: getData_pieChart()
-                                }
-                            )
+                                    res.send(
+                                        {
+                                            lineGraph: getData_lineGraph(),
+                                            treeMap: getData_treeMap(),
+                                            barChart: getData_barChart(),
+                                            pieChart: getData_pieChart(),
+                                            summary: getData_summary()
+                                        }
+                                    )
+                                });
                         });
                 });
         });
@@ -126,6 +135,10 @@ function getData_pieChart() {
 
 function getData_barChart() {
     return daily
+}
+
+function getData_summary() {
+    return summary
 }
 
 function getData_lineGraph() {
