@@ -1,0 +1,32 @@
+@use '../colours';
+
+#main_summary{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+}
+
+#value_container{
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+#summary_content{
+    display: none;
+    margin: 0 20px 0 20px;
+}
+
+.summary_heading{
+    font-size: 1vw;
+    font-weight: 500;
+    padding-top: 10px;
+    margin: 0;
+    text-align: left;
+    color: #b4b4b4;
+}
+
+.summary_value{
+    font-size: 1.2vw;
+    margin: 0;
+    text-align: left; 
+}

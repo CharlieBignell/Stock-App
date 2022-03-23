@@ -8,6 +8,7 @@ import BarChart from "../graphs/BarChart"
 import TreeMap from "../graphs/TreeMap"
 import PieChart from "../graphs/PieChart"
 import Card from "../components/Card"
+import Summary from "../components/Summary"
 
 import MultiToggle from "react-multi-toggle";
 import '../styles/components/Toggle.scss';
@@ -83,7 +84,12 @@ class Overview extends Component {
                                     onSelectOption={this.onTimeSelect}
                                 />
                             </Card>
-                            <Card id="card_summary" />
+                            <Card id="card_summary">
+                                <Summary
+                                    data={this.state.data}
+                                    dateRange={this.state.dateRange}
+                                />
+                            </Card>
                         </div>
                         <Card id="card_bar">
                             <BarChart
