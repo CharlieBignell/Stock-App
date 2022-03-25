@@ -44,7 +44,7 @@ class Summary extends Component {
     }
 }
 
-function generateSummary(data, date) {
+function generateSummary(data, dateRange) {
 
     // Add loading text
     let container_loading = document.getElementById("loading_summary")
@@ -66,12 +66,35 @@ function generateSummary(data, date) {
 
         // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data).summary
+
+        let return_num = formatValue(dataset[0].totalReturn_amount)
+        let return_per = `(+${dataset[0].totalReturn_per}%)`
+        let vix = `${dataset[0].VIX_current}`
+
+        switch (dateRange) {
+            case "w":
+                return_num = formatValue(dataset[0].weekReturn_amount)
+                return_per = `(+${dataset[0].weekReturn_per}%)`
+                vix = `${dataset[0].VIX_week}`
+                break;
+            case "m":
+                return_num = formatValue(dataset[0].monthReturn_amount)
+                return_per = `(+${dataset[0].monthReturn_per}%)`
+                vix = `${dataset[0].VIX_month}`
+                break;
+            case "y":
+                return_num = formatValue(dataset[0].yearReturn_amount)
+                return_per = `(+${dataset[0].yearReturn_per}%)`
+                vix = `${dataset[0].VIX_year}`
+                break;
+        }
+
         document.getElementById("invested").innerHTML = formatValue(dataset[0].totalInvested)
         document.getElementById("itm").innerHTML = formatValue(dataset[0].totalITM)
         document.getElementById("value").innerHTML = formatValue(dataset[0].currentValue)
-        document.getElementById("return_num").innerHTML = formatValue(dataset[0].totalReturn_amount)
-        document.getElementById("return_per").innerHTML = `(+${dataset[0].totalReturn_per}%)`
-        document.getElementById("vix").innerHTML = `${dataset[0].VIX_current}`
+        document.getElementById("return_num").innerHTML = return_num
+        document.getElementById("return_per").innerHTML = return_per
+        document.getElementById("vix").innerHTML = vix
 
     }
 }
