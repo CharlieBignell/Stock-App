@@ -66,7 +66,6 @@ class Overview extends Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions);
-
     }
 
     render() {
@@ -75,9 +74,9 @@ class Overview extends Component {
                 <Header />
                 <div id="content">
 
-                    <div id="content_left" className="content_panel">
+                    <div id="overview_content_left" className="content_panel">
                         <div id="cards_topLeft">
-                            <Card id="card_selector">
+                            <Card id="overview_card_selector">
                                 <MultiToggle
                                     options={time}
                                     selectedOption={this.state.dateRange}
@@ -100,7 +99,7 @@ class Overview extends Component {
                         </Card>
                     </div>
 
-                    <div id="content_center" className="content_panel">
+                    <div id="overview_content_center" className="content_panel">
                         <Card id="card_line">
                             <LineGraph
                                 data={this.state.data}
@@ -118,7 +117,7 @@ class Overview extends Component {
                         </Card>
                     </div>
 
-                    <div id="content_right" className="content_panel">
+                    <div id="overview_content_right" className="content_panel">
                         <Card id="card_input" />
                         <Card id="card_pie">
                             <PieChart

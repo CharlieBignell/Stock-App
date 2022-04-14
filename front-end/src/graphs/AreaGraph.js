@@ -6,13 +6,25 @@ import * as d3 from 'd3'
 import '../styles/graphs/AreaGraph.scss'
 
 class AreaGraph extends Component {
+
     componentDidMount() {
-        areaGraph(this.props.data, this.props.id)
+        areaGraph(this.props.data, this.props.id, this.props.view, this.props.dateRange)
     }
 
     componentDidUpdate() {
-        areaGraph(this.props.data, this.props.id)
+        areaGraph(this.props.data, this.props.id, this.props.view, this.props.dateRange)
     }
+
+
+
+    componentDidMount() {
+        areaGraph(this.props.data, this.props.id, this.props.view, this.props.dateRange)
+    }
+
+    componentDidUpdate() {
+        areaGraph(this.props.data, this.props.id, this.props.view, this.props.dateRange)
+    }
+
 
     render() {
         return <div id={this.props.id} className="card_inner">
@@ -33,7 +45,7 @@ class AreaGraph extends Component {
     }
 }
 
-function areaGraph(data, id) {
+function areaGraph(data, id, view, dateRange) {
 
     // Add loading text
     let container_loading = document.getElementById("loading_areaGraph")
@@ -44,6 +56,8 @@ function areaGraph(data, id) {
     // If we have the data, draw the graph
     if (data !== "NULL") {
 
+        document.getElementById("title_areaGraph").style.display = "block"
+
         // Clear the loading text
         while (container_loading.firstChild) {
             container_loading.removeChild(container_loading.lastChild)
@@ -52,11 +66,12 @@ function areaGraph(data, id) {
         let dataset = JSON.parse(data).areaGraph
         container_loading.style.height = 0;
 
-        document.getElementById("title_areaGraph").style.display = "block"
+        if (document.getElementById(`#${id}_svg`)) { document.getElementById(`#${id}_svg`).remove() }
 
         const margin = { top: 50, right: 50, bottom: 50, left: 90 }
-        const width = 1000 - margin.left - margin.right
-        const height = 900 - margin.top - margin.bottom
+
+        const width = document.getElementById("card_areaGraph").clientWidth - margin.left - margin.right
+        const height = document.getElementById("card_areaGraph").clientHeight - margin.top - margin.bottom - 55
 
         const dateParser = d3.timeParse("%Y-%m-%d")
         const dateFormatter = d3.timeFormat("%b %-d %Y")
@@ -79,6 +94,7 @@ function areaGraph(data, id) {
 
         const svg = d3.select(`#${id}`)
             .append("svg")
+            .attr("id", `#${id}_svg`)
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -238,11 +254,12 @@ function areaGraph(data, id) {
             tooltip
                 .style("transform",
                     `translate(
-                    calc( -35% + ${x(closestXValue) + margin.left}px),
-                    calc(10% + ${event.clientY}px))`)
+                    calc(-50% + ${event.x}px),
+                    calc(15% + ${event.y}px))`)
                 .style("opacity", 1)
         }
-
+        // calc( -35% + ${x(closestXValue) + margin.left}px),
+        // calc(10% + ${event.clientY}px))`)
         function onMouseLeave() {
             // Remove the tooltip and line
             tooltip.style("opacity", 0)

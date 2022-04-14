@@ -5,94 +5,119 @@
     color: white;
     display: flex;
     flex-flow: column nowrap;
-    border-radius:8px;
+    border-radius: 8px;
     -webkit-box-shadow: 1px 0px 18px -2px colours.$shadow;
     box-shadow: 1px 0px 18px -2px colours.$shadow;
 }
 
-.cardTitle{
+.cardTitle {
     font-size: 1.4vw;
     font-weight: 500;
     padding-top: 10px;
-    margin:0 20px 0 20px ;
+    margin: 0 20px 0 20px;
     height: 30px;
     text-align: left;
     display: none;
 }
 
-#cards_topLeft{
+#cards_topLeft {
     display: flex;
     flex-flow: column nowrap;
 }
 
-.content_panel{
+.content_panel {
     display: flex;
     flex-flow: column nowrap;
 }
 
-#card_selector{
+#overview_card_selector,
+#breakdown_card_selector {
     margin-bottom: 20px;
 }
 
-#card_summary{
+#overview_card_selector>*,
+#breakdown_card_selector>* {
+    margin: 20px;
+}
+
+#breakdown_card_selector {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+#card_summary,
+#card_tickSummary,
+#card_areaGraph {
     flex-basis: 100%;
 }
 
-#card_input, #card_line, #cards_topLeft{
+#card_input,
+#card_line,
+#cards_topLeft {
     flex-basis: 60%;
 }
 
-#card_pie, #card_treemap, #card_bar{
+#card_pie,
+#card_treemap,
+#card_bar,
+#card_winLose {
     margin-top: 20px;
     flex-basis: 40%;
 }
 
-
-#content_left{
+#overview_content_left {
     flex-basis: 20%;
 }
 
-#content_center{
+#overview_content_center {
     flex-basis: 60%;
     margin: 0 20px 0 20px;
 }
 
-#content_right{
+#overview_content_right {
     flex-basis: 20%;
 }
 
-.card_inner{
+#breakdown_content_left {
+    flex-basis: 40%;
+    margin-right: 20px;
+}
+
+#breakdown_content_right {
+    flex-basis: 60%;
+}
+
+.card_inner {
     display: flex;
     flex-flow: column nowrap;
     height: 100%;
 }
 
-.loadingDiv > p{
-    margin:0;
+.loadingDiv>p {
+    margin: 0;
     text-align: center;
 }
 
-.loadingDiv{
-    border-radius:5px;
+.loadingDiv {
+    border-radius: 5px;
     height: 100%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
-    background-image: linear-gradient(
-        90deg,
-        colours.$primary_light 0%, colours.$primary_light 40%,
-        colours.$gridline 50%, colours.$gridline 55%,
-        colours.$primary_light 65%, colours.$primary_light 100%
-    );
+    background-image: linear-gradient(90deg,
+            colours.$primary_light 0%, colours.$primary_light 40%,
+            colours.$gridline 50%, colours.$gridline 55%,
+            colours.$primary_light 65%, colours.$primary_light 100%);
     background-size: 300%;
     animation: shimmer 1750ms infinite;
 }
 
-@keyframes shimmer{
-    from {background-position: 100% 100%;}
-    to {background-position: 0 0;}
-}
+@keyframes shimmer {
+    from {
+        background-position: 100% 100%;
+    }
 
-#card_selector >* {
-    margin: 20px;
+    to {
+        background-position: 0 0;
+    }
 }
