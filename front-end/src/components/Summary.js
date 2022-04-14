@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { formatValue } from '../utils.js';
+import { formatValue, red, green } from '../utils.js';
 
 import '../styles/components/Summary.scss';
 
@@ -20,22 +20,29 @@ class Summary extends Component {
                 <h2 className="cardTitle" id="title_summary">Summary</h2>
 
                 <div id="summary_content">
-
-                    <p className="summary_heading">Invested</p>
-                    <p id="invested" className = "summary_value"></p>
-
-                    <p className="summary_heading">In the Market</p>
-                    <p id="itm" className = "summary_value"></p>
-
-                    <p className="summary_heading">Current Value</p>
-                    <div id="value_container">
-                        <p id="value" className = "summary_value"></p>
-                        <p id="return_num" className = "summary_value"></p>
-                        <p id="return_per" className = "summary_value"></p>
+                    <div>
+                        <p className="summary_heading">Invested</p>
+                        <p id="invested" className="summary_value"></p>
                     </div>
 
-                    <p className="summary_heading">Volatility</p>
-                    <p id="vix" className = "summary_value"></p>
+                    <div>
+                        <p className="summary_heading">In the Market / Withdrawn</p>
+                        <p id="itm" className="summary_value"></p>
+                    </div>
+
+                    <div>
+                        <p className="summary_heading">Current Value</p>
+                        <div id="value_container">
+                            <p id="value" className="summary_value"></p>
+                            <p id="return" className="summary_value"></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p className="summary_heading" id="vol_heading">Volatility (mean VIX)</p>
+                        <p id="vix" className="summary_value"></p>
+                    </div>
+
 
                 </div>
 
@@ -62,39 +69,52 @@ function generateSummary(data, dateRange) {
 
         container_loading.style.height = 0;
         document.getElementById("title_summary").style.display = "block"
-        document.getElementById("summary_content").style.display = "block"
+        document.getElementById("summary_content").style.display = "flex"
 
         // Extract the right dataset and generate the rquired moving avg lines
         let dataset = JSON.parse(data).summary
 
-        let return_num = formatValue(dataset[0].totalReturn_amount)
-        let return_per = `(+${dataset[0].totalReturn_per}%)`
-        let vix = `${dataset[0].VIX_current}`
+        let return_num = dataset[0].totalReturn_amount
+        let return_per = dataset[0].totalReturn_per
+        let vix = dataset[0].VIX_current
+
+        document.getElementById("vol_heading").innerHTML = "Volatility (mean VIX)"
 
         switch (dateRange) {
             case "w":
-                return_num = formatValue(dataset[0].weekReturn_amount)
-                return_per = `(+${dataset[0].weekReturn_per}%)`
+                return_num = dataset[0].weekReturn_amount
+                return_per = dataset[0].weekReturn_per
                 vix = `${dataset[0].VIX_week}`
                 break;
             case "m":
-                return_num = formatValue(dataset[0].monthReturn_amount)
-                return_per = `(+${dataset[0].monthReturn_per}%)`
+                return_num = dataset[0].monthReturn_amount
+                return_per = dataset[0].monthReturn_per
                 vix = `${dataset[0].VIX_month}`
                 break;
             case "y":
-                return_num = formatValue(dataset[0].yearReturn_amount)
-                return_per = `(+${dataset[0].yearReturn_per}%)`
+                return_num = dataset[0].yearReturn_amount
+                return_per = dataset[0].yearReturn_per
                 vix = `${dataset[0].VIX_year}`
                 break;
+            default:
+                document.getElementById("vol_heading").innerHTML = "Volatility (current VIX)"
         }
 
+        let prefix = return_num >= 0 ? "+" : ""
+        let colour = return_num > 0 ? green : red
+
+        let return_string = `&nbsp;&nbsp;${prefix}${formatValue(return_num)} (${prefix}${return_per}%)`
+        let vix_string = `${vix}`
+
+        // These are static
         document.getElementById("invested").innerHTML = formatValue(dataset[0].totalInvested)
-        document.getElementById("itm").innerHTML = formatValue(dataset[0].totalITM)
+        document.getElementById("itm").innerHTML = `${formatValue(dataset[0].totalITM)} / ${formatValue(dataset[0].totalInvested - dataset[0].totalITM)}`
         document.getElementById("value").innerHTML = formatValue(dataset[0].currentValue)
-        document.getElementById("return_num").innerHTML = return_num
-        document.getElementById("return_per").innerHTML = return_per
-        document.getElementById("vix").innerHTML = vix
+
+        // These change when the date range is changed
+        document.getElementById("return").innerHTML = return_string
+        document.getElementById("return").style.color = colour
+        document.getElementById("vix").innerHTML = vix_string
 
     }
 }

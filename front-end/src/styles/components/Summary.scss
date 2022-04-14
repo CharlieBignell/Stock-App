@@ -3,7 +3,7 @@
 #main_summary{
     display: flex;
     flex-flow: column nowrap;
-    justify-content: space-between;
+    flex-basis: 100%;
 }
 
 #value_container{
@@ -14,19 +14,24 @@
 #summary_content{
     display: none;
     margin: 0 20px 0 20px;
+    justify-content: space-evenly;
+    flex-flow: column nowrap;
+    flex-basis: 100%;
 }
 
 .summary_heading{
-    font-size: 1vw;
+    font-size: 1.1vw;
     font-weight: 500;
-    padding-top: 10px;
     margin: 0;
     text-align: left;
     color: #b4b4b4;
+    line-height: 2.2vh;
+
 }
 
 .summary_value{
-    font-size: 1.2vw;
+    font-size: 1.3vw;
     margin: 0;
     text-align: left; 
+    line-height: 2.6vh;
 }

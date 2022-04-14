@@ -115,14 +115,13 @@ export function getTimeString(date) {
 export function formatValue(x) {
 
     x = Math.round(parseFloat(x))
-
     // Add prefix if negative
     let prefix = x < 0 ? "- " : ""
 
     x = Math.abs(x)
 
     let xLength = x.toString().length
-    let format = `£${(x)}`
+    let format = `${prefix}£${(x)}`
 
     if (xLength == 4) {
         format = `${prefix}£${(x / 1000).toFixed(1)}k`
@@ -131,6 +130,7 @@ export function formatValue(x) {
     } else if (xLength > 6) {
         format = `${prefix}£${(x / 1000000).toFixed(0)}M`
     }
+    
     return format
 }
 
